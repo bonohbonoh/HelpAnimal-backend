@@ -1,0 +1,33 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+  h2:
+    console:
+      enabled: true
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      format_sql: true
+  server:
+    port: 8080
+  redis:
+    host: localhost
+    port: 6379
+logging:
+  level:
+    org.hibernate.type: trace
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import: file:/app/config/backend/application.yml
