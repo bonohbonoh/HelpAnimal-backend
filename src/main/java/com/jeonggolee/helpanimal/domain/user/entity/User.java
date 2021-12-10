@@ -18,39 +18,39 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(nullable = false, length = 40)
+    @Column(nullable = false, length = 40, unique = true)
     private String email;
 
-    @Column(nullable = false, length = 32)
-    private String passWord;
+    @Column(nullable = false, length = 256)
+    private String password;
 
     @Column(nullable = false, length = 10)
     private String name;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 30, unique = true)
     private String nickName;
 
     @Column(nullable = false) // 프로필 사진 필요시
-    private String picture;
+    private String profileImage;
 
     /*
     모집공고 조인 필요시
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "recruitment")
     private List<Recruitment> recruitmentList;
-    @Enumerated(EnumType.STRING)
      */
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
     @Builder
-    public User(String email, String passWord, String name, String nickName, String picture, Role role) {
+    public User(String email, String password, String name, String nickName, String profileImage, Role role) {
         this.email = email;
-        this.passWord = passWord;
+        this.password = password;
         this.name = name;
         this.nickName = nickName;
-        this.picture = picture;
+        this.profileImage = profileImage;
         this.role = role;
     }
 
