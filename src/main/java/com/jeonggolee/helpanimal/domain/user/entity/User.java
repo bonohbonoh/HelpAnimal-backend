@@ -4,7 +4,6 @@ import com.jeonggolee.helpanimal.domain.user.util.Role;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -12,6 +11,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "user")
+@Builder
 public class User {
 
     @Id
@@ -33,29 +33,13 @@ public class User {
     @Column(nullable = false) // 프로필 사진 필요시
     private String profileImage;
 
-    /*
-    모집공고 조인 필요시
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "recruitment")
-    private List<Recruitment> recruitmentList;
-     */
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    @Builder
-    public User(String email, String password, String name, String nickName, String profileImage, Role role) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.nickName = nickName;
-        this.profileImage = profileImage;
-        this.role = role;
-    }
-
     public String getRoleKey() {
         return this.role.getKey();
     }
+
 }
 
