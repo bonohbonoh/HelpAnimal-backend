@@ -1,5 +1,6 @@
 package com.jeonggolee.helpanimal.domain.crew.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 )
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "crew")
 public class Crew {
     @Id
