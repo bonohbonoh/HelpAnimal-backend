@@ -1,4 +1,4 @@
-package com.jeonggolee.helpanimal.config.domain.crew.domain;
+package com.jeonggolee.helpanimal.domain.crew.domain;
 
 import lombok.Builder;
 import lombok.Getter;
