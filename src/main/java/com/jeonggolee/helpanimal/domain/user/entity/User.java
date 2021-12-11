@@ -13,7 +13,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "user")
 @Builder
-@Setter
 public class User extends BaseTimeEntity {
 
     @Id
@@ -43,10 +42,16 @@ public class User extends BaseTimeEntity {
         return this.role.getKey();
     }
 
-    public User update(String nickName, String profileImage, String password) {
-        this.nickName = nickName;
+    public void updateProfileImage(String profileImage){
         this.profileImage = profileImage;
-        this.password = password;
-        return this;
     }
+
+    public void updateNickName(String nickName){
+        this.nickName = nickName;
+    }
+
+    public void updatePassWord(String password){
+        this.password = password;
+    }
+
 }
