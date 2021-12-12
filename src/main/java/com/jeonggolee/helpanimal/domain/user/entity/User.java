@@ -29,7 +29,7 @@ public class User extends BaseTimeEntity {
     private String name;
 
     @Column(nullable = false, length = 30, unique = true)
-    private String nickName;
+    private String nickname;
 
     @Column(nullable = false) // 프로필 사진 필요시
     private String profileImage;
@@ -46,11 +46,11 @@ public class User extends BaseTimeEntity {
         this.profileImage = profileImage;
     }
 
-    public void updateNickName(String nickName){
-        this.nickName = nickName;
+    public void updateNickname(String nickname){
+        this.nickname = nickname;
     }
 
-    public void updatePassWord(String password){
+    public void updatePassword(String password){
         this.password = password;
     }
 

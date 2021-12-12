@@ -35,7 +35,7 @@ public class UserRepositoryTest {
                 .email(EMAIL)
                 .password(PASSWORD)
                 .name(NAME)
-                .nickName(NICKNAME)
+                .nickname(NICKNAME)
                 .profileImage(IMAGE)
                 .role(GUEST)
                 .build();
@@ -47,7 +47,7 @@ public class UserRepositoryTest {
         assertThat(saveUser.getEmail()).isEqualTo(EMAIL);
         assertThat(saveUser.getPassword()).isEqualTo(PASSWORD);
         assertThat(saveUser.getName()).isEqualTo(NAME);
-        assertThat(saveUser.getNickName()).isEqualTo(NICKNAME);
+        assertThat(saveUser.getNickname()).isEqualTo(NICKNAME);
         assertThat(saveUser.getProfileImage()).isEqualTo(IMAGE);
         assertThat(saveUser.getRole()).isEqualTo(GUEST);
     }
@@ -61,7 +61,7 @@ public class UserRepositoryTest {
                 .email(EMAIL)
                 .password(PASSWORD)
                 .name(NAME)
-                .nickName(NICKNAME)
+                .nickname(NICKNAME)
                 .profileImage(IMAGE)
                 .role(GUEST)
                 .build();
@@ -75,7 +75,7 @@ public class UserRepositoryTest {
         assertThat(readUser.getEmail()).isEqualTo(EMAIL);
         assertThat(readUser.getPassword()).isEqualTo(PASSWORD);
         assertThat(readUser.getName()).isEqualTo(NAME);
-        assertThat(readUser.getNickName()).isEqualTo(NICKNAME);
+        assertThat(readUser.getNickname()).isEqualTo(NICKNAME);
         assertThat(readUser.getProfileImage()).isEqualTo(IMAGE);
         assertThat(readUser.getRole()).isEqualTo(GUEST);
     }
@@ -88,22 +88,22 @@ public class UserRepositoryTest {
                 .email(EMAIL)
                 .password(PASSWORD)
                 .name(NAME)
-                .nickName(NICKNAME)
+                .nickname(NICKNAME)
                 .profileImage(IMAGE)
                 .role(GUEST)
                 .build();
         User saveUser = userRepository.save(user);
 
         //when
-        saveUser.updateNickName("update nickname");
-        saveUser.updatePassWord("update password");
+        saveUser.updateNickname("update nickname");
+        saveUser.updatePassword("update password");
         saveUser.updateProfileImage("update image");
         userRepository.save(saveUser);
 
         //then
         User updateUser = userRepository.getById(user.getUserId());
         assertThat(updateUser.getPassword()).isEqualTo("update password");
-        assertThat(updateUser.getNickName()).isEqualTo("update nickname");
+        assertThat(updateUser.getNickname()).isEqualTo("update nickname");
         assertThat(updateUser.getProfileImage()).isEqualTo("update image");
 
     }
@@ -116,7 +116,7 @@ public class UserRepositoryTest {
                 .email(EMAIL)
                 .password(PASSWORD)
                 .name(NAME)
-                .nickName(NICKNAME)
+                .nickname(NICKNAME)
                 .profileImage(IMAGE)
                 .role(GUEST)
                 .build();
