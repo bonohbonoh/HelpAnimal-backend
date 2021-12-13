@@ -41,4 +41,8 @@ public class CrewMember extends BaseTimeEntity{
     public void registerCrew(Crew crew){
         this.crew = crew;
     }
+
+    public void registerUser(User user){
+        this.user = user;
+    }
 }
