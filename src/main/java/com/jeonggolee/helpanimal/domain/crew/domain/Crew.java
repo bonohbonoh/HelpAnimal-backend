@@ -39,6 +39,7 @@ public class Crew extends BaseTimeEntity {
 
     public void addCrewMember(CrewMember newCrewMember){
         crewMember.add(newCrewMember);
+        newCrewMember.registerCrew(this);
     }
 
     public void removeCrewMember(CrewMember deleteCrewMember){
