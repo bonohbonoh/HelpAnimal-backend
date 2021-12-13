@@ -8,7 +8,6 @@ import lombok.*;
 import javax.persistence.*;
 
 @Getter
-@Setter
 @SequenceGenerator(
         name = "crew_member_idx_generator",
         sequenceName = "crew_member_idx"
@@ -35,5 +34,11 @@ public class CrewMember extends BaseTimeEntity{
     @Column(nullable = false)
     private CrewMemberRole role;
 
+    public void updateCrewMemberRole(CrewMemberRole role){
+        this.role = role;
+    }
 
+    public void registerCrew(Crew crew){
+        this.crew = crew;
+    }
 }
