@@ -56,7 +56,7 @@ class CrewRepositoryTest {
         Long saveId = crewRepository.save(crew).getId();
 
         Crew findCrew = crewRepository.findById(saveId).get();
-        findCrew.setName("바꾼크루");
+        findCrew.updateName("바꾼크루");
 
         crewRepository.save(findCrew);
 

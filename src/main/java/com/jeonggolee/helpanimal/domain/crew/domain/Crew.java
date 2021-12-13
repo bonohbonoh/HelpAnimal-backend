@@ -6,7 +6,6 @@ import javax.persistence.*;
 import java.util.List;
 
 @Getter
-@Setter
 @SequenceGenerator(
         name = "crew_idx_generator",
         sequenceName = "crew_idx"
@@ -32,6 +31,18 @@ public class Crew {
     //TODO: 크루 스케쥴 테이블이 추가되면 OneToMany 추가(단방향 예정)
 
     //TODO: 크루 게시판 테이블이 추가되면 OneToMany 추가(단방향 예정)
+
+    public void updateName(String name){
+        this.name = name;
+    }
+
+    public void addCrewMember(CrewMember newCrewMember){
+        crewMember.add(newCrewMember);
+    }
+
+    public void removeCrewMember(CrewMember deleteCrewMember){
+        crewMember.remove(deleteCrewMember);
+    }
 
 
 
