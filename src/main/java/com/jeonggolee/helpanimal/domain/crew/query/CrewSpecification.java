@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 public class CrewSpecification {
 
-    //크루 이름으로 조회
+    //크루 ID로 조회
     public Specification<Crew> searchWithId(Long id){
         return (root, query, builder) -> {
             List<Predicate> predicateList = new ArrayList<>();
