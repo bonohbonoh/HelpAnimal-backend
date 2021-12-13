@@ -1,5 +1,6 @@
 package com.jeonggolee.helpanimal.domain.crew.domain;
 
+import com.jeonggolee.helpanimal.common.eneity.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "crew")
-public class Crew {
+public class Crew extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "crew_idx_generator")
     private Long id;
