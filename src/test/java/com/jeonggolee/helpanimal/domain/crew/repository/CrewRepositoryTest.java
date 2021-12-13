@@ -53,6 +53,19 @@ class CrewRepositoryTest {
     }
 
     @Test
+    @DisplayName("크루 조회 실패")
+    void findCrewFailTest(){
+        //given
+
+        //when
+        Long wrongId = 0L;
+
+        //then
+        Optional<Crew> findCrew = crewRepository.findById(wrongId);
+        assertThat(findCrew.isPresent()).isFalse();
+    }
+
+    @Test
     @DisplayName("크루 이름으로 조회")
     void findCrewWithNameTest(){
         //given
