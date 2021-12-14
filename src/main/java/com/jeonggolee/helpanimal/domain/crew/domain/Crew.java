@@ -23,7 +23,7 @@ public class Crew extends BaseTimeEntity {
     @Column(length = 20, nullable = false, unique = true)
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "crew_id")
     private List<CrewMember> crewMember;
 
@@ -44,6 +44,7 @@ public class Crew extends BaseTimeEntity {
 
     public void removeCrewMember(CrewMember deleteCrewMember){
         crewMember.remove(deleteCrewMember);
+        deleteCrewMember.delete();
     }
 
 
