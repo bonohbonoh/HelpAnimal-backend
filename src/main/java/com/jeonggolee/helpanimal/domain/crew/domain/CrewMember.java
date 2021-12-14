@@ -22,12 +22,12 @@ public class CrewMember extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "crew_member_idx_generator")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "crew_id", nullable = false, updatable = false)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "crew_id")
     private Crew crew;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Enumerated(EnumType.STRING)
@@ -44,5 +44,20 @@ public class CrewMember extends BaseTimeEntity{
 
     public void registerUser(User user){
         this.user = user;
+    }
+
+    private void removeCrew(){
+        this.crew = null;
+    }
+
+    private void removeUser(){
+        this.user = null;
+    }
+
+    @Override
+    public void delete(){
+        super.delete();
+        this.removeCrew();
+        this.removeUser();
     }
 }
