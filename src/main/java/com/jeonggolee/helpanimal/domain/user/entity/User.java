@@ -1,10 +1,12 @@
 package com.jeonggolee.helpanimal.domain.user.entity;
 
 import com.jeonggolee.helpanimal.common.eneity.BaseTimeEntity;
+import com.jeonggolee.helpanimal.domain.crew.domain.CrewMember;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -37,6 +39,9 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<CrewMember> crewMemberList;
 
     public String getRoleKey() {
         return this.role.getKey();
