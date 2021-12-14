@@ -25,7 +25,7 @@ public class Crew extends BaseTimeEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "crew_id")
-    private List<CrewMember> crewMember;
+    private List<CrewMember> crewMemberList;
 
     //TODO: 공고 테이블이 추가되면 OneToMany 추가
 
@@ -38,15 +38,19 @@ public class Crew extends BaseTimeEntity {
     }
 
     public void addCrewMember(CrewMember newCrewMember){
-        crewMember.add(newCrewMember);
+        crewMemberList.add(newCrewMember);
         newCrewMember.registerCrew(this);
     }
 
     public void removeCrewMember(CrewMember deleteCrewMember){
-        crewMember.remove(deleteCrewMember);
+        crewMemberList.remove(deleteCrewMember);
         deleteCrewMember.delete();
     }
 
-
+    @Override
+    public void delete(){
+        super.delete();
+        this.crewMemberList.forEach(CrewMember::delete);
+    }
 
 }
