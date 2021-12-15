@@ -23,7 +23,7 @@ public class Crew extends BaseTimeEntity {
     @Column(length = 20, nullable = false, unique = true)
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "crew_id")
     private List<CrewMember> crewMemberList;
 
