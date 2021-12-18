@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
+import javax.management.relation.RoleNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
@@ -27,11 +28,11 @@ public class JwtTokenProvider {
     private final UserDetailsService userDetailsService;
 
     @PostConstruct
-    protected void init(){
+    protected void init() {
         key = Base64.getEncoder().encodeToString(key.getBytes());
     }
 
-    public String generateToken(String email, List<String> role){
+    public String generateToken(String email, List<String> role) {
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", role);
         Date now = new Date();
@@ -45,9 +46,10 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserEmail(token));
-        /*
-            분기 조건 구현 예정
-         */
+        String role = getUserRole(token);
+        if(role == null){
+            throw new RuntimeException("권한이 존재하지 않습니다.");
+        }
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

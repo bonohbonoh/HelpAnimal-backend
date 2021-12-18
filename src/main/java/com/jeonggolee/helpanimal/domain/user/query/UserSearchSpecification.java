@@ -36,13 +36,25 @@ public class UserSearchSpecification {
         };
     }
 
-    //유저 닉네임으로 조회
+    //유저 이메일로 조회
     public Specification<User> searchWithEmail(String email) {
         return (root, query, builder) -> {
             List<Predicate> predicateList = new ArrayList<>();
 
             predicateList.add(this.withNotDeleted(root, builder));
             predicateList.add(this.withEmail(email, root, builder));
+
+            return builder.and(predicateList.toArray(new Predicate[0]));
+        };
+    }
+
+    //유저 이메일로 조회
+    public Specification<User> searchWithEmailEqual(String email) {
+        return (root, query, builder) -> {
+            List<Predicate> predicateList = new ArrayList<>();
+
+            predicateList.add(this.withNotDeleted(root, builder));
+            predicateList.add(this.withEmailEqual(email, root, builder));
 
             return builder.and(predicateList.toArray(new Predicate[0]));
         };
@@ -66,5 +78,10 @@ public class UserSearchSpecification {
     //유저 이메일 조건 쿼리
     private Predicate withEmail(String email, Root<User> root, CriteriaBuilder builder) {
         return builder.like(root.get("email"), email + "%");
+    }
+
+    //유저 이메일 일치 쿼리
+    private Predicate withEmailEqual(String email, Root<User> root, CriteriaBuilder builder) {
+        return builder.equal(root.get("email"), email);
     }
 }
