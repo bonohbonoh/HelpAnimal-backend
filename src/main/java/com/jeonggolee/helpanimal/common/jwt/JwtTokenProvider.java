@@ -46,10 +46,6 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserEmail(token));
-        String role = getUserRole(token);
-        if(role == null){
-            throw new RuntimeException("권한이 존재하지 않습니다.");
-        }
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
