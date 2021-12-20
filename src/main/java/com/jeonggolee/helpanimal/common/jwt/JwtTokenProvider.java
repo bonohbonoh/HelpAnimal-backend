@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.management.relation.RoleNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -32,9 +34,9 @@ public class JwtTokenProvider {
         key = Base64.getEncoder().encodeToString(key.getBytes());
     }
 
-    public String generateToken(String email, List<String> role) {
+    public String generateToken(String email, Collection<? extends GrantedAuthority> authorities) {
         Claims claims = Jwts.claims().setSubject(email);
-        claims.put("roles", role);
+        claims.put("roles", authorities);
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims)

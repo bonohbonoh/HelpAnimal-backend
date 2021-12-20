@@ -3,11 +3,12 @@ package com.jeonggolee.helpanimal.domain.user.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor
