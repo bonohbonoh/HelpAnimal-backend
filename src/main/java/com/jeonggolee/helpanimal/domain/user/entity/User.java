@@ -40,23 +40,32 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<CrewMember> crewMemberList;
 
     public String getRoleKey() {
         return this.role.getKey();
     }
 
-    public void updateProfileImage(String profileImage){
+    public void updateProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
 
-    public void updateNickname(String nickname){
+    public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
 
-    public void updatePassword(String password){
+    public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public User(String email, String password, String name, String nickname, String profileImage, Role role) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        this.role = role;
     }
 
 }
