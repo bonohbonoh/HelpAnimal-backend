@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -16,22 +17,22 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class UserSignupDto {
 
-    @NotNull
+    @NotEmpty
     private String email;
 
-    @NotNull
+    @NotEmpty
     private String password;
 
-    @NotNull
+    @NotEmpty
     private String name;
 
-    @NotNull
+    @NotEmpty
     private String nickname;
 
-    @NotNull
+    @NotEmpty
     private String profileImag;
 
-    @NotNull
+    @NotEmpty
     private Role role;
 
     @JsonIgnore

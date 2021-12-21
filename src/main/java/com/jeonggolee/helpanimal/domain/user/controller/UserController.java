@@ -19,7 +19,7 @@ public class UserController {
 
     @PostMapping(value = "/sign-up")
     public ResponseEntity userSignup(@RequestBody UserSignupDto signUpDto) throws Exception {
-        boolean existUser = userService.signUpUser(signUpDto);
+        boolean existUser = userService.signUpUserRequiredCheck(signUpDto);
         if (existUser) {
             return new ResponseEntity(HttpStatus.CREATED);
         }
@@ -28,7 +28,7 @@ public class UserController {
 
     @PostMapping(value = "/login",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JwtTokenDto> userLogin(@RequestBody UserLoginDto dto) throws Exception {
-        String token = userService.loginUser(dto);
+        String token = userService.logInUserRequiredCheck(dto);
         return new ResponseEntity<JwtTokenDto>(new JwtTokenDto(token),HttpStatus.OK);
     }
 
