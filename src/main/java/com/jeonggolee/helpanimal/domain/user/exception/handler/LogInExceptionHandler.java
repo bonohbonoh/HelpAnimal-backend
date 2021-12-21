@@ -3,7 +3,6 @@ package com.jeonggolee.helpanimal.domain.user.exception.handler;
 import com.jeonggolee.helpanimal.domain.user.exception.ExceptionStatus;
 import com.jeonggolee.helpanimal.domain.user.exception.login.EmailPasswordNullPointException;
 import com.jeonggolee.helpanimal.domain.user.exception.login.WrongPasswordException;
-import com.jeonggolee.helpanimal.domain.user.exception.signup.UserDuplicationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

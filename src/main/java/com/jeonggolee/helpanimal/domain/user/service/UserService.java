@@ -52,7 +52,7 @@ public class UserService {
 
     public String loginUser(UserLoginDto dto) throws Exception {
         Optional<User> user = userRepository.findOne(userSearchSpecification.searchWithEmailEqual(dto.getEmail()));
-        if(user.isPresent()){
+        if (user.isPresent()) {
             boolean isMatchingPassword = passwordEncoder.matches(dto.getPassword(), user.get().getPassword());
             boolean isMatchingEmail = user.get().getEmail().matches(dto.getEmail());
             if (isMatchingPassword && isMatchingEmail) {
@@ -62,8 +62,9 @@ public class UserService {
         throw new WrongPasswordException("잘못된 이메일 혹은 패스워드 입니다.");
     }
 
-    public String logInUserRequiredCheck(UserLoginDto dto) throws Exception{
-        if(dto.getEmail().equals("") || dto.getPassword().equals("")) throw new EmailPasswordNullPointException("이메일 혹은 패스워드를 입력해주세요.");
+    public String logInUserRequiredCheck(UserLoginDto dto) throws Exception {
+        if (dto.getEmail().equals("") || dto.getPassword().equals(""))
+            throw new EmailPasswordNullPointException("이메일 혹은 패스워드를 입력해주세요.");
         return loginUser(dto);
     }
 }
