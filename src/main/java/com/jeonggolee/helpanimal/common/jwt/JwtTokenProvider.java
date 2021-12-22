@@ -36,7 +36,7 @@ public class JwtTokenProvider {
 
     public String generateToken(String email, Collection<? extends GrantedAuthority> authorities) {
         Claims claims = Jwts.claims().setSubject(email);
-        claims.put("roles", authorities);
+        claims.put("ROLE", authorities);
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims)

@@ -1,6 +1,7 @@
 package com.jeonggolee.helpanimal.domain.user.controller;
 
 import com.jeonggolee.helpanimal.common.dto.JwtTokenDto;
+import com.jeonggolee.helpanimal.domain.user.dto.UserInfoReadDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
 import com.jeonggolee.helpanimal.domain.user.service.UserService;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/user")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
@@ -30,6 +31,12 @@ public class UserController {
     public ResponseEntity<JwtTokenDto> userLogin(@RequestBody UserLoginDto dto) throws Exception {
         String token = userService.loginUser(dto);
         return new ResponseEntity<JwtTokenDto>(new JwtTokenDto(token),HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/my-page")
+    public ResponseEntity<UserInfoReadDto> userInfoReadDtoResponseEntity() throws Exception{
+        UserInfoReadDto userInfoReadDto = userService.readUserInfo();
+        return new ResponseEntity<UserInfoReadDto>(userInfoReadDto, HttpStatus.OK);
     }
 
 }

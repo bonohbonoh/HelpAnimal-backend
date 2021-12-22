@@ -20,10 +20,11 @@ public class JwtFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         String token = tokenProvider.resolveToken((HttpServletRequest) request);
-        if(token != null && tokenProvider.validateToken(token)){
+        if (token != null && tokenProvider.validateToken(token)) {
             Authentication authentication = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+//        SecurityContextHolder.clearContext();
         chain.doFilter(request, response);
     }
 }
