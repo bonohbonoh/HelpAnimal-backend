@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class LogInExceptionHandler {
+public class LoginExceptionHandler {
     @ExceptionHandler(WrongPasswordException.class)
-    public ResponseEntity<ExceptionStatus> WrongPasswordException(WrongPasswordException wrongPasswordException) {
+    public ResponseEntity<ExceptionStatus> wrongPasswordException(WrongPasswordException wrongPasswordException) {
         ExceptionStatus response = new ExceptionStatus(wrongPasswordException.getMessage(), 403);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(EmailPasswordNullPointException.class)
-    public ResponseEntity<ExceptionStatus> EmailPasswordNullPointException(EmailPasswordNullPointException emailPasswordNullPointException) {
+    public ResponseEntity<ExceptionStatus> emailPasswordNullPointException(EmailPasswordNullPointException emailPasswordNullPointException) {
         ExceptionStatus response = new ExceptionStatus(emailPasswordNullPointException.getMessage(), 400);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
     }
