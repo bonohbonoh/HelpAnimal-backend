@@ -37,7 +37,7 @@ public class UserController {
 
     @GetMapping(value = "/my-page")
     public ResponseEntity<UserInfoReadDto> userInfoReadDtoResponseEntity() throws Exception{
-        UserInfoReadDto userInfoReadDto = userService.readUserInfo();
+        UserInfoReadDto userInfoReadDto = userService.userInfoReadDto();
         return new ResponseEntity<UserInfoReadDto>(userInfoReadDto, HttpStatus.OK);
     }
 

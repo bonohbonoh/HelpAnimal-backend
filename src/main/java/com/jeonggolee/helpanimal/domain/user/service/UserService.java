@@ -1,24 +1,30 @@
 package com.jeonggolee.helpanimal.domain.user.service;
 
 import com.jeonggolee.helpanimal.common.jwt.JwtTokenProvider;
+import com.jeonggolee.helpanimal.domain.user.dto.UserInfoReadDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.exception.login.EmailPasswordNullPointException;
+import com.jeonggolee.helpanimal.domain.user.exception.login.WrongPasswordException;
+import com.jeonggolee.helpanimal.domain.user.exception.signup.UserDuplicationException;
+import com.jeonggolee.helpanimal.domain.user.exception.signup.UserInfoNotFoundException;
 import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
-import com.jeonggolee.helpanimal.domain.user.util.Role;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -31,7 +37,7 @@ public class UserService {
         dto.PasswordEncoding(encodePassword);
         Optional<User> user = userRepository.findOne(userSearchSpecification.searchWithEmailEqual(dto.getEmail()));
         if (user.isPresent()) {
-            throw new DuplicateKeyException("이미 존재하는 유저입니다.");
+            throw new UserDuplicationException("이미 존재하는 유저입니다.");
         }
         String email = userRepository.save(dto.toEntity()).getEmail();
         if (email != null && !email.equals("")) {
@@ -41,13 +47,23 @@ public class UserService {
     }
 
     public String loginUser(UserLoginDto dto) throws Exception {
-        User user = userRepository.findOne(userSearchSpecification.searchWithEmailEqual(dto.getEmail())).get();
+        User user = userRepository.findOne(userSearchSpecification.searchWithEmailEqual(dto.getEmail()))
+                .orElseThrow(() -> new UserInfoNotFoundException("존재하지 않는 회원입니다."));
         boolean isMatchingPassword = passwordEncoder.matches(dto.getPassword(), user.getPassword());
-        if (isMatchingPassword) {
+        boolean isMatchingEmail = user.getEmail().matches(dto.getEmail());
+        if (isMatchingPassword && isMatchingEmail) {
             return provider.generateToken(dto.getEmail(), Collections.singleton(new SimpleGrantedAuthority(user.getRole().toString())));
         }
-        throw new RuntimeException("비밀번호가 틀립니다.");
+        throw new WrongPasswordException("잘못된 이메일 혹은 패스워드 입니다.");
+    }
 
+    public UserInfoReadDto userInfoReadDto() throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        UserInfoReadDto dto = new UserInfoReadDto(userRepository.findOne(userSearchSpecification.searchWithEmailEqual(email))
+                .orElseThrow(() -> new UserInfoNotFoundException("존재하지 않는 회원입니다.")));
+        return dto;
     }
 
 }
+
