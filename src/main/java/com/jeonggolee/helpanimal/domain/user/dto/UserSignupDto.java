@@ -40,9 +40,8 @@ public class UserSignupDto {
     @NotEmpty(message = "프로필 설정을 해주세요.")
     private String profileImag;
 
-    @NotEmpty(message = "권한이 없습니다.")
-    @Enum(enumClass = Role.class, ignoreCase = true)
-    private String role;
+    @NotNull(message = "권한이 없습니다.")
+    private Role role;
 
     @JsonIgnore
     public void PasswordEncoding(String password) {
