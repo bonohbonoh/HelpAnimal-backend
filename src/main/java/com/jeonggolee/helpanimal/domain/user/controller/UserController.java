@@ -15,12 +15,12 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/v1/user")
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping(value = "/sign-up")
+    @PostMapping(value = "/")
     public ResponseEntity userSignup(@RequestBody @Valid UserSignupDto signUpDto) throws Exception {
         boolean existUser = userService.signUpUser(signUpDto);
         if (existUser) {
@@ -35,7 +35,7 @@ public class UserController {
         return new ResponseEntity<JwtTokenDto>(new JwtTokenDto(token),HttpStatus.OK);
     }
 
-    @GetMapping(value = "/my-page")
+    @GetMapping(value = "/{email}")
     public ResponseEntity<UserInfoReadDto> userInfoReadDtoResponseEntity() throws Exception{
         UserInfoReadDto userInfoReadDto = userService.userInfoReadDto();
         return new ResponseEntity<UserInfoReadDto>(userInfoReadDto, HttpStatus.OK);

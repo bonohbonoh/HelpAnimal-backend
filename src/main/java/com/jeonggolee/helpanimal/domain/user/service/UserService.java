@@ -60,9 +60,8 @@ public class UserService {
     public UserInfoReadDto userInfoReadDto() throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        UserInfoReadDto dto = new UserInfoReadDto(userRepository.findOne(userSearchSpecification.searchWithEmailEqual(email))
+        return new UserInfoReadDto(userRepository.findOne(userSearchSpecification.searchWithEmailEqual(email))
                 .orElseThrow(() -> new UserInfoNotFoundException("존재하지 않는 회원입니다.")));
-        return dto;
     }
 
 }

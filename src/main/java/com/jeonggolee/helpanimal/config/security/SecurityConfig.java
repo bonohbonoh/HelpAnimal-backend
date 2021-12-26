@@ -30,7 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         if (isLocalMode()) {
             setLocalMode(http);
-            return;
         }
         setCommonConfig(http);
     }
@@ -40,11 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private void setLocalMode(HttpSecurity http) throws Exception {
-
-        http
-                .csrf().disable()
-                .httpBasic().disable();
-
         http
                 .headers()
                 .frameOptions()
@@ -52,20 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers("/h2-console/*").permitAll()
-                .antMatchers("/swagger-resources/**").permitAll()
-                .antMatchers("/v2/api-docs").permitAll()
-                .antMatchers("/webjars/**").permitAll()
-                .antMatchers("/swagger/**").permitAll()
-                .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers("/api/user/sign-up/").anonymous()
-                .antMatchers("/api/user/login/").anonymous()
-                .antMatchers("/api/user/my-page/").hasRole("GUEST")
-                .anyRequest().permitAll()
-                .and()
-                .formLogin().disable()
-                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
-
+                .antMatchers("/h2-console/*").permitAll();
     }
 
     private void setCommonConfig(HttpSecurity http) throws Exception {
@@ -73,19 +54,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
-                .httpBasic().disable();
+                .httpBasic().disable()
+                .headers()
+                .frameOptions()
+                .sameOrigin();
 
         http
                 .authorizeRequests()
-                .antMatchers("/v2/api-docs").anonymous()
-                .antMatchers("/swagger-resources/**").anonymous()
+                .antMatchers("/v2/api-docs").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
                 .antMatchers("/webjars/**").anonymous()
-                .antMatchers("/swagger/**").anonymous()
-                .antMatchers("/swagger-ui/**").anonymous()
-                .antMatchers("/api/**").anonymous()
-                .anyRequest().authenticated()
+                .antMatchers("/swagger/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/api/v1/user/login/").anonymous()
+                .antMatchers("/api/v1/user/{email}/").authenticated()
+                .anyRequest().permitAll()
                 .and()
-                .formLogin().disable();
+                .formLogin().disable()
+                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+
     }
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -110,3 +97,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 }
+
