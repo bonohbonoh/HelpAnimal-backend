@@ -29,14 +29,14 @@ public class UserController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping(value = "/login",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<JwtTokenDto> userLogin(@RequestBody @Valid  UserLoginDto dto) throws Exception {
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<JwtTokenDto> userLogin(@RequestBody @Valid UserLoginDto dto) throws Exception {
         String token = userService.loginUser(dto);
-        return new ResponseEntity<JwtTokenDto>(new JwtTokenDto(token),HttpStatus.OK);
+        return new ResponseEntity<JwtTokenDto>(new JwtTokenDto(token), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{email}")
-    public ResponseEntity<UserInfoReadDto> userInfoReadDtoResponseEntity() throws Exception{
+    public ResponseEntity<UserInfoReadDto> userInfoReadDtoResponseEntity() throws Exception {
         UserInfoReadDto userInfoReadDto = userService.userInfoReadDto();
         return new ResponseEntity<UserInfoReadDto>(userInfoReadDto, HttpStatus.OK);
     }

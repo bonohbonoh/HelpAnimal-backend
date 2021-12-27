@@ -26,7 +26,7 @@ public class SignUpExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionStatus> methodValidException(MethodArgumentNotValidException e, HttpServletRequest request){
+    public ResponseEntity<ExceptionStatus> methodValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
         ExceptionStatus response = new ExceptionStatus(e.getBindingResult().getFieldError().getDefaultMessage(), 400);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
     }

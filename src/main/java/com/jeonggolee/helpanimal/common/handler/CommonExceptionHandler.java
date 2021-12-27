@@ -2,7 +2,6 @@ package com.jeonggolee.helpanimal.common.handler;
 
 import com.jeonggolee.helpanimal.common.execption.UserNotFoundException;
 import com.jeonggolee.helpanimal.domain.user.exception.ExceptionStatus;
-import com.jeonggolee.helpanimal.domain.user.exception.login.WrongPasswordException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,3 +15,4 @@ public class CommonExceptionHandler {
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
     }
 }
+

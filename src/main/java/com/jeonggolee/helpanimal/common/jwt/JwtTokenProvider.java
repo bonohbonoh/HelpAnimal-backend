@@ -12,13 +12,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.PostConstruct;
-import javax.management.relation.RoleNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Component

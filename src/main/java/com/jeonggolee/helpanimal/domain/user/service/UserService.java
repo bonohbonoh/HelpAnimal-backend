@@ -5,7 +5,6 @@ import com.jeonggolee.helpanimal.domain.user.dto.UserInfoReadDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
-import com.jeonggolee.helpanimal.domain.user.exception.login.EmailPasswordNullPointException;
 import com.jeonggolee.helpanimal.domain.user.exception.login.WrongPasswordException;
 import com.jeonggolee.helpanimal.domain.user.exception.signup.UserDuplicationException;
 import com.jeonggolee.helpanimal.domain.user.exception.signup.UserInfoNotFoundException;
