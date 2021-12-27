@@ -49,6 +49,6 @@ public class CrewSpecification {
 
     //크루이름 조건 쿼리
     private Predicate withName(String name, Root<Crew> root, CriteriaBuilder builder){
-        return builder.equal(root.get("name"), name);
+        return builder.like(root.get("name"), "%" + name + "%");
     }
 }
