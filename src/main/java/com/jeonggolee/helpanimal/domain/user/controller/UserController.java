@@ -1,6 +1,7 @@
 package com.jeonggolee.helpanimal.domain.user.controller;
 
 import com.jeonggolee.helpanimal.common.dto.JwtTokenDto;
+import com.jeonggolee.helpanimal.domain.user.dto.UserInfoReadDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
 import com.jeonggolee.helpanimal.domain.user.service.UserService;
@@ -14,12 +15,12 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/user")
+@RequestMapping("/api/v1/user")
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping(value = "/sign-up")
+    @PostMapping(value = "/")
     public ResponseEntity userSignup(@RequestBody @Valid UserSignupDto signUpDto) throws Exception {
         boolean existUser = userService.signUpUser(signUpDto);
         if (existUser) {
@@ -28,10 +29,16 @@ public class UserController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping(value = "/login",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<JwtTokenDto> userLogin(@RequestBody @Valid  UserLoginDto dto) throws Exception {
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<JwtTokenDto> userLogin(@RequestBody @Valid UserLoginDto dto) throws Exception {
         String token = userService.loginUser(dto);
-        return new ResponseEntity<JwtTokenDto>(new JwtTokenDto(token),HttpStatus.OK);
+        return new ResponseEntity<JwtTokenDto>(new JwtTokenDto(token), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{email}")
+    public ResponseEntity<UserInfoReadDto> userInfoReadDtoResponseEntity() throws Exception {
+        UserInfoReadDto userInfoReadDto = userService.userInfoReadDto();
+        return new ResponseEntity<UserInfoReadDto>(userInfoReadDto, HttpStatus.OK);
     }
 
 }

@@ -31,7 +31,7 @@ public class SwaggerConfig {
                 .useDefaultResponseMessages(true);
     }
     private ApiKey apiKey() {
-        return new ApiKey("JWT", "accessToken", "header");
+        return new ApiKey("JWT", "X-AUTH-TOKEN", "header");
     }
     private SecurityContext securityContext() {
         return SecurityContext

@@ -1,17 +1,19 @@
 package com.jeonggolee.helpanimal.domain.user.service;
 
 import com.jeonggolee.helpanimal.common.jwt.JwtTokenProvider;
+import com.jeonggolee.helpanimal.domain.user.dto.UserInfoReadDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
-import com.jeonggolee.helpanimal.domain.user.exception.login.EmailPasswordNullPointException;
 import com.jeonggolee.helpanimal.domain.user.exception.login.WrongPasswordException;
 import com.jeonggolee.helpanimal.domain.user.exception.signup.UserDuplicationException;
 import com.jeonggolee.helpanimal.domain.user.exception.signup.UserInfoNotFoundException;
 import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +54,13 @@ public class UserService {
             return provider.generateToken(dto.getEmail(), Collections.singleton(new SimpleGrantedAuthority(user.getRole().toString())));
         }
         throw new WrongPasswordException("잘못된 이메일 혹은 패스워드 입니다.");
+    }
+
+    public UserInfoReadDto userInfoReadDto() throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return new UserInfoReadDto(userRepository.findOne(userSearchSpecification.searchWithEmailEqual(email))
+                .orElseThrow(() -> new UserInfoNotFoundException("존재하지 않는 회원입니다.")));
     }
 
 }

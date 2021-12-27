@@ -2,7 +2,6 @@ package com.jeonggolee.helpanimal.domain.user.service;
 
 import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
-import com.jeonggolee.helpanimal.domain.user.util.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -12,7 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 @Service
