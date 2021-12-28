@@ -141,7 +141,8 @@ class CrewServiceTest {
         ReadCrewDetailDto readCrewDetailDto = crewService.readCrewDetail(id);
 
         //then
-        assertThat(readCrewDetailDto.getName()).isEqualTo("테스트크루");
+        System.out.println("name: " + readCrewDetailDto.getMasterName());
+        assertThat(readCrewDetailDto.getMasterName()).isEqualTo("테스트이름");
     }
 
     @Test
