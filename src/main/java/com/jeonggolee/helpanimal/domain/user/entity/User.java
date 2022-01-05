@@ -74,5 +74,4 @@ public class User extends BaseTimeEntity {
         this.profileImage = profileImage;
         this.role = role;
     }
-
 }

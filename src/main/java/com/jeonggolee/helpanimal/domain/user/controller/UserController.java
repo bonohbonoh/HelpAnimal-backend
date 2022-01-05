@@ -51,5 +51,4 @@ public class UserController {
         userService.authEmail(code);
         return new ResponseEntity<String>(HttpStatus.OK);
     }
-
 }
