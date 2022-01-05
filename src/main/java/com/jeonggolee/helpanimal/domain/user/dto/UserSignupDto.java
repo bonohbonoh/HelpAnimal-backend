@@ -36,10 +36,8 @@ public class UserSignupDto {
     @Size(min = 2, max = 30, message = "닉네임은 2글자에서 30글자 사이입니다.")
     private String nickname;
 
-    @NotEmpty(message = "프로필 설정을 해주세요.")
     private String profileImag;
 
-    @NotNull(message = "권한이 없습니다.")
     private Role role;
 
     @JsonIgnore
@@ -53,7 +51,7 @@ public class UserSignupDto {
                 .password(password)
                 .name(name)
                 .nickname(nickname)
-                .profileImage(profileImag)
+                .profileImage("https://basic-profile.com")
                 .role(Role.GUEST)
                 .build();
     }

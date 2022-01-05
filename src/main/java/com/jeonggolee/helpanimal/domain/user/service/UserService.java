@@ -10,6 +10,7 @@ import com.jeonggolee.helpanimal.domain.user.exception.signup.UserDuplicationExc
 import com.jeonggolee.helpanimal.domain.user.exception.signup.UserInfoNotFoundException;
 import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
+import com.jeonggolee.helpanimal.domain.user.util.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,6 +31,7 @@ public class UserService {
     private final UserSearchSpecification userSearchSpecification;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider provider;
+    private final UserEmailService userEmailService;
 
     public boolean signUpUser(UserSignupDto dto) throws Exception {
         String encodePassword = passwordEncoder.encode(dto.getPassword());
@@ -61,6 +63,30 @@ public class UserService {
         String email = authentication.getName();
         return new UserInfoReadDto(userRepository.findOne(userSearchSpecification.searchWithEmailEqual(email))
                 .orElseThrow(() -> new UserInfoNotFoundException("존재하지 않는 회원입니다.")));
+    }
+
+    public String sendEmail() throws Exception{
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findOne(userSearchSpecification.searchWithEmailEqual(email)).orElseThrow(() -> new UserInfoNotFoundException("회원정보가 없습니다."));
+        String code = userEmailService.createKey();
+        userEmailService.sendMail(email,"회원가입 인증 이메일입니다.",code);
+        user.updateCode(code);
+        userRepository.save(user);
+        return email;
+    }
+
+    public String authEmail(String code){
+        System.out.println("실행은되?");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findOne(userSearchSpecification.searchWithEmailEqual(email)).orElseThrow(() -> new UserInfoNotFoundException("회원정보가 없습니다."));
+        if(!code.equals(user.getCode())){
+            throw new WrongPasswordException("코드가 틀립니다.");
+        }
+        user.updateRole(Role.USER);
+        userRepository.save(user);
+        return email;
     }
 
 }

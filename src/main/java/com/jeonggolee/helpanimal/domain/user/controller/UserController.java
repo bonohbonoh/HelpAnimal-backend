@@ -35,10 +35,21 @@ public class UserController {
         return new ResponseEntity<JwtTokenDto>(new JwtTokenDto(token), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{email}")
+    @GetMapping(value = "/auth/my-page")
     public ResponseEntity<UserInfoReadDto> userInfoReadDtoResponseEntity() throws Exception {
         UserInfoReadDto userInfoReadDto = userService.userInfoReadDto();
         return new ResponseEntity<UserInfoReadDto>(userInfoReadDto, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/auth/{email}")
+    public String emailSendResponseEntity() throws Exception {
+        return userService.sendEmail();
+    }
+
+    @PostMapping(value = "/auth/emailverify")
+    public ResponseEntity<String> emailAuthResponseEntity(@RequestBody String code) throws Exception {
+        userService.authEmail(code);
+        return new ResponseEntity<String>(HttpStatus.OK);
     }
 
 }
