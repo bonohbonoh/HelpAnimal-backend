@@ -7,8 +7,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -133,6 +136,22 @@ public class RecruitmentRepositoryTest {
         //then
         Optional<Recruitment> deleteRecruitment = recruitmentRepository.findById(id);
         assertThat(deleteRecruitment.isPresent()).isFalse();
+    }
+
+    @Test
+    @DisplayName("공고 페이징")
+    void 공고페이징_삭제된_공고는_조회되지_않는다() {
+        //given
+        Recruitment recruitment = initEntity();
+        Recruitment deletedRecruitment = initEntity();
+        deletedRecruitment.delete();
+        recruitmentRepository.saveAll(List.of(recruitment,deletedRecruitment));
+
+        //when
+        Page<Recruitment> list = recruitmentRepository.findAllByDeletedAtIsNull(PageRequest.of(0,10));
+
+        //then
+        assertThat(list.getTotalElements()).isEqualTo(1L);
     }
 
 }
