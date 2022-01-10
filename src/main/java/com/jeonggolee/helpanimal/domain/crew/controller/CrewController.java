@@ -3,6 +3,7 @@ package com.jeonggolee.helpanimal.domain.crew.controller;
 import com.jeonggolee.helpanimal.domain.crew.dto.CreateCrewDto;
 import com.jeonggolee.helpanimal.domain.crew.dto.ReadCrewDetailDto;
 import com.jeonggolee.helpanimal.domain.crew.dto.ReadCrewDto;
+import com.jeonggolee.helpanimal.domain.crew.dto.UpdateCrewDto;
 import com.jeonggolee.helpanimal.domain.crew.service.CrewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,12 @@ public class CrewController {
         ReadCrewDetailDto result;
         result = crewService.readCrewDetail(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PutMapping("")
+    public ResponseEntity<Long> updateCrew(@RequestBody UpdateCrewDto updateCrewDto){
+        Long updatedCrewId = crewService.updateCrew(updateCrewDto);
+        return new ResponseEntity<>(updatedCrewId, HttpStatus.OK);
     }
 
 }

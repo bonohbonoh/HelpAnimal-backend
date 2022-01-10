@@ -92,7 +92,7 @@ public class CrewService {
         validateDuplicateCrewName(updateCrewDto.getName());
 
         Crew crew = crewRepository.findOne(cs.searchWithId(updateCrewDto.getId()))
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 크루 입니다."));
+                .orElseThrow(() -> new CrewNotFoundException("존재하지 않는 크루 입니다."));
 
         if(updateCrewDto.getName() != null)
             crew.updateName(updateCrewDto.getName());

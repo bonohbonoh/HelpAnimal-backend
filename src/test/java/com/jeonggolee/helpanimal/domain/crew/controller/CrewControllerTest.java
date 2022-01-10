@@ -2,6 +2,7 @@ package com.jeonggolee.helpanimal.domain.crew.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jeonggolee.helpanimal.domain.crew.dto.CreateCrewDto;
+import com.jeonggolee.helpanimal.domain.crew.dto.UpdateCrewDto;
 import com.jeonggolee.helpanimal.domain.crew.exception.handler.CrewExceptionHandler;
 import com.jeonggolee.helpanimal.domain.crew.service.CrewService;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
@@ -193,5 +194,22 @@ class CrewControllerTest {
         assertThat(jsonResult.getLong("id")).isEqualTo(id);
     }
 
+    @Test
+    @WithUserDetails(requesterEmail)
+    @DisplayName("크루 수정")
+    void updateCrew() throws Exception {
+        //given
+        Long id = createCrewList();
+        UpdateCrewDto updateCrewDto = new UpdateCrewDto(id, "바뀐이름");
 
+        String requestBody = objectMapper.writeValueAsString(updateCrewDto);
+
+        //when
+        crewMvc.perform(
+                        MockMvcRequestBuilders.put(URL + "/crew")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody)
+                )
+        .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 }
