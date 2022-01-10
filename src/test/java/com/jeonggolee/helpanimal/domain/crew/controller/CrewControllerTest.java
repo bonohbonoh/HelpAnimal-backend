@@ -3,9 +3,12 @@ package com.jeonggolee.helpanimal.domain.crew.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jeonggolee.helpanimal.domain.crew.dto.CreateCrewDto;
 import com.jeonggolee.helpanimal.domain.crew.exception.handler.CrewExceptionHandler;
+import com.jeonggolee.helpanimal.domain.crew.service.CrewService;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,6 +21,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 
@@ -34,9 +39,10 @@ class CrewControllerTest {
     CrewController crewController;
     @Autowired
     ObjectMapper objectMapper;
-
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    CrewService crewService;
 
     private static final String URL = "/api/v1";
 
@@ -114,5 +120,78 @@ class CrewControllerTest {
         //then
         .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
+
+    private Long createCrewList(){
+        crewService.createCrew(new CreateCrewDto("크루 1"), requesterEmail);
+        crewService.createCrew(new CreateCrewDto("크루 2"), requesterEmail);
+        crewService.createCrew(new CreateCrewDto("크루 3"), requesterEmail);
+        crewService.createCrew(new CreateCrewDto("크루짜잔 4"), requesterEmail);
+        crewService.createCrew(new CreateCrewDto("크루짜잔 5"), requesterEmail);
+        return crewService.createCrew(new CreateCrewDto("크루짜잔 6"), requesterEmail);
+    }
+
+    @Test
+    @WithUserDetails(requesterEmail)
+    @DisplayName("크루 전체 목록 조회")
+    void readCrewList() throws Exception {
+        //given
+        createCrewList();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("page", "0");
+        params.add("size", "10");
+
+        //when
+        MvcResult result = crewMvc.perform(
+                        MockMvcRequestBuilders.get(URL + "/crew").params(params)
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        //then
+        JSONArray jsonResult = new JSONArray(result.getResponse().getContentAsString());
+        assertThat(jsonResult.length()).isEqualTo(6);
+
+    }
+
+    @Test
+    @WithUserDetails(requesterEmail)
+    @DisplayName("크루 목록 이름으로 검색")
+    void readCrewList_name() throws Exception {
+        //given
+        createCrewList();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("page", "0");
+        params.add("size", "10");
+        params.add("name", "짜잔");
+
+        //when
+        MvcResult result = crewMvc.perform(
+                        MockMvcRequestBuilders.get(URL + "/crew").params(params)
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        //then
+        JSONArray jsonResult = new JSONArray(result.getResponse().getContentAsString());
+        assertThat(jsonResult.length()).isEqualTo(3);
+    }
+
+    @Test
+    @WithUserDetails(requesterEmail)
+    @DisplayName("크루 아이디로 상세조회")
+    void readCrew_id() throws Exception {
+        //given
+        Long id = createCrewList();
+
+        //when
+        MvcResult result = crewMvc.perform(
+                        MockMvcRequestBuilders.get(URL + "/crew/"+id)
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        //then
+        JSONObject jsonResult = new JSONObject(result.getResponse().getContentAsString());
+        assertThat(jsonResult.getLong("id")).isEqualTo(id);
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.jeonggolee.helpanimal.domain.crew.service;
 
 import com.jeonggolee.helpanimal.common.exception.CrewNameDuplicateException;
+import com.jeonggolee.helpanimal.common.exception.CrewNotFoundException;
 import com.jeonggolee.helpanimal.domain.crew.domain.Crew;
 import com.jeonggolee.helpanimal.domain.crew.domain.CrewMember;
 import com.jeonggolee.helpanimal.domain.crew.dto.CreateCrewDto;
@@ -16,11 +17,9 @@ import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -83,7 +82,7 @@ public class CrewService {
     //크루 아이디로 상세조회
     public ReadCrewDetailDto readCrewDetail(Long id){
         Crew crew = crewRepository.findOne(cs.searchWithId(id))
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 크루 입니다."));
+                .orElseThrow(() -> new CrewNotFoundException("존재하지 않는 크루 입니다."));
 
         return new ReadCrewDetailDto(crew);
     }
