@@ -1,5 +1,6 @@
 package com.jeonggolee.helpanimal.domain.crew.service;
 
+import com.jeonggolee.helpanimal.common.exception.CrewNameDuplicateException;
 import com.jeonggolee.helpanimal.domain.crew.domain.Crew;
 import com.jeonggolee.helpanimal.domain.crew.domain.CrewMember;
 import com.jeonggolee.helpanimal.domain.crew.dto.CreateCrewDto;
@@ -42,7 +43,7 @@ public class CrewService {
         CrewMember crewMaster = createCrewMaster(user);
         crewMemberRepository.save(crewMaster);
 
-        Crew crew = createCrewDto.toEntity(crewMaster);
+        Crew crew = createCrewDto.toEntity();
         crew.addCrewMember(crewMaster);
 
         return crewRepository.save(crew).getId();
@@ -51,7 +52,7 @@ public class CrewService {
     //크루명 중복처리
     private void validateDuplicateCrewName(String crewName){
         if (crewRepository.existsCrewByName(crewName)) {
-            throw new IllegalStateException("이미 존재하는 크루이름입니다.");
+            throw new CrewNameDuplicateException("이미 존재하는 크루이름입니다.");
         }
     }
 
