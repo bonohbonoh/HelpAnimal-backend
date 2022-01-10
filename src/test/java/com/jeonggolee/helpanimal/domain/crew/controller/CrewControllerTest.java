@@ -212,4 +212,18 @@ class CrewControllerTest {
                 )
         .andExpect(MockMvcResultMatchers.status().isOk());
     }
+
+    @Test
+    @WithUserDetails(requesterEmail)
+    @DisplayName("크루 삭제")
+    void deleteCrew() throws Exception {
+        //given
+        Long id = createCrewList();
+
+        //when
+        crewMvc.perform(
+                        MockMvcRequestBuilders.delete(URL + "/crew/" + id)
+                )
+        .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 }

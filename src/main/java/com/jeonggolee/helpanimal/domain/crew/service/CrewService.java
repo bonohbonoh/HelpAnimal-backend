@@ -102,7 +102,7 @@ public class CrewService {
 
     public void deleteCrew(Long id){
         Crew crew = crewRepository.findOne(cs.searchWithId(id))
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 크루 입니다."));
+                .orElseThrow(() -> new CrewNotFoundException("존재하지 않는 크루 입니다."));
 
         crew.delete();
 
