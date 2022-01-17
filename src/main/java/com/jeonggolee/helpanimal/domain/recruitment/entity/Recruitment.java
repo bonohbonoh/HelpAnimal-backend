@@ -30,7 +30,7 @@ public class Recruitment extends BaseTimeEntity {
 
     /** 등록자 */
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "author_id")
     private User user;
 
     /** 내용 */
@@ -47,7 +47,7 @@ public class Recruitment extends BaseTimeEntity {
     private int participant;
 
     /** 첨부 이미지 */
-    @Column(nullable = false, length = 500)
+    @Column(nullable = true, length = 500)
     private String imageUrl;
 
     /** 채용 방식 */
@@ -63,6 +63,15 @@ public class Recruitment extends BaseTimeEntity {
         this.name = name;
     }
 
+    public void updateContent(String content) {
+        this.content = content;
+    }
 
+    public void updateParticipant(int participant) {
+        this.participant = participant;
+    }
 
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }
