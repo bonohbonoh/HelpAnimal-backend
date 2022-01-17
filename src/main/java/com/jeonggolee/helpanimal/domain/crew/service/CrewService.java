@@ -1,5 +1,7 @@
 package com.jeonggolee.helpanimal.domain.crew.service;
 
+import com.jeonggolee.helpanimal.common.exception.CrewNameDuplicateException;
+import com.jeonggolee.helpanimal.common.exception.CrewNotFoundException;
 import com.jeonggolee.helpanimal.domain.crew.domain.Crew;
 import com.jeonggolee.helpanimal.domain.crew.domain.CrewMember;
 import com.jeonggolee.helpanimal.domain.crew.dto.CreateCrewDto;
@@ -15,11 +17,9 @@ import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +42,7 @@ public class CrewService {
         CrewMember crewMaster = createCrewMaster(user);
         crewMemberRepository.save(crewMaster);
 
-        Crew crew = createCrewDto.toEntity(crewMaster);
+        Crew crew = createCrewDto.toEntity();
         crew.addCrewMember(crewMaster);
 
         return crewRepository.save(crew).getId();
@@ -51,7 +51,7 @@ public class CrewService {
     //크루명 중복처리
     private void validateDuplicateCrewName(String crewName){
         if (crewRepository.existsCrewByName(crewName)) {
-            throw new IllegalStateException("이미 존재하는 크루이름입니다.");
+            throw new CrewNameDuplicateException("이미 존재하는 크루이름입니다.");
         }
     }
 
@@ -82,7 +82,7 @@ public class CrewService {
     //크루 아이디로 상세조회
     public ReadCrewDetailDto readCrewDetail(Long id){
         Crew crew = crewRepository.findOne(cs.searchWithId(id))
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 크루 입니다."));
+                .orElseThrow(() -> new CrewNotFoundException("존재하지 않는 크루 입니다."));
 
         return new ReadCrewDetailDto(crew);
     }
@@ -92,7 +92,7 @@ public class CrewService {
         validateDuplicateCrewName(updateCrewDto.getName());
 
         Crew crew = crewRepository.findOne(cs.searchWithId(updateCrewDto.getId()))
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 크루 입니다."));
+                .orElseThrow(() -> new CrewNotFoundException("존재하지 않는 크루 입니다."));
 
         if(updateCrewDto.getName() != null)
             crew.updateName(updateCrewDto.getName());
@@ -102,7 +102,7 @@ public class CrewService {
 
     public void deleteCrew(Long id){
         Crew crew = crewRepository.findOne(cs.searchWithId(id))
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 크루 입니다."));
+                .orElseThrow(() -> new CrewNotFoundException("존재하지 않는 크루 입니다."));
 
         crew.delete();
 
