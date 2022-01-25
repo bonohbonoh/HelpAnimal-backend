@@ -1,18 +1,19 @@
 package com.jeonggolee.helpanimal.domain.user.service;
 
+import com.jeonggolee.helpanimal.common.dto.JwtTokenDto;
+import com.jeonggolee.helpanimal.common.exception.UserNotFoundException;
 import com.jeonggolee.helpanimal.common.jwt.JwtTokenProvider;
 import com.jeonggolee.helpanimal.domain.user.dto.UserInfoReadDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.exception.auth.WrongAuthenticationUrlException;
 import com.jeonggolee.helpanimal.domain.user.exception.login.WrongPasswordException;
 import com.jeonggolee.helpanimal.domain.user.exception.signup.UserDuplicationException;
-import com.jeonggolee.helpanimal.domain.user.exception.signup.UserInfoNotFoundException;
 import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -33,60 +35,64 @@ public class UserService {
     private final JwtTokenProvider provider;
     private final UserEmailService userEmailService;
 
-    public boolean signUpUser(UserSignupDto dto) throws Exception {
+    private String getAuthenticationName() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    private User getUser(String email) {
+        return userRepository.findOne(userSearchSpecification.searchWithEmailEqual(email))
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 회원입니다."));
+    }
+
+    public String signUpUser(UserSignupDto dto) {
         String encodePassword = passwordEncoder.encode(dto.getPassword());
         dto.PasswordEncoding(encodePassword);
         Optional<User> user = userRepository.findOne(userSearchSpecification.searchWithEmailEqual(dto.getEmail()));
         if (user.isPresent()) {
             throw new UserDuplicationException("이미 존재하는 유저입니다.");
         }
-        String email = userRepository.save(dto.toEntity()).getEmail();
-        if (email != null && !email.equals("")) {
-            return true;
-        }
-        return false;
+        return userRepository.save(dto.toEntity()).getEmail();
     }
 
-    public String loginUser(UserLoginDto dto) throws Exception {
-        User user = userRepository.findOne(userSearchSpecification.searchWithEmailEqual(dto.getEmail()))
-                .orElseThrow(() -> new UserInfoNotFoundException("존재하지 않는 회원입니다."));
+    public JwtTokenDto loginUser(UserLoginDto dto) {
+        User user = getUser(dto.getEmail());
         boolean isMatchingPassword = passwordEncoder.matches(dto.getPassword(), user.getPassword());
-        boolean isMatchingEmail = user.getEmail().matches(dto.getEmail());
-        if (isMatchingPassword && isMatchingEmail) {
-            return provider.generateToken(dto.getEmail(), Collections.singleton(new SimpleGrantedAuthority(user.getRole().toString())));
+        if (!isMatchingPassword) {
+            throw new WrongPasswordException("잘못된 패스워드 입니다.");
         }
-        throw new WrongPasswordException("잘못된 이메일 혹은 패스워드 입니다.");
+        return new JwtTokenDto(provider.generateToken(dto.getEmail(), Collections.singleton(new SimpleGrantedAuthority(user.getRole().toString()))));
     }
 
-    public UserInfoReadDto userInfoReadDto() throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+    public UserInfoReadDto userInfoReadDto(String password) {
+        String email = getAuthenticationName();
+        User user = getUser(email);
+        boolean isMatchingPassword = passwordEncoder.matches(password, user.getPassword());
+        if (!isMatchingPassword) {
+            throw new WrongPasswordException("잘못된 패스워드 입니다.");
+        }
         return new UserInfoReadDto(userRepository.findOne(userSearchSpecification.searchWithEmailEqual(email))
-                .orElseThrow(() -> new UserInfoNotFoundException("존재하지 않는 회원입니다.")));
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 회원입니다.")));
     }
 
-    public String sendEmail() throws Exception{
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        User user = userRepository.findOne(userSearchSpecification.searchWithEmailEqual(email)).orElseThrow(() -> new UserInfoNotFoundException("회원정보가 없습니다."));
-        String code = userEmailService.createKey();
-        userEmailService.sendMail(email,"회원가입 인증 이메일입니다.",code);
-        user.updateCode(code);
+    public String sendEmail() {
+        String email = getAuthenticationName();
+        User user = getUser(email);
+        String url = "http://localhost:8080/auth/email-verify/email?=" + email + "&authToken=" + UUID.randomUUID().toString();
+        userEmailService.sendMail(email, "회원가입 인증 이메일입니다.", url);
+        user.updateUrl(url);
         userRepository.save(user);
-        return email;
+        return url;
     }
 
-    public String authEmail(String code){
-        System.out.println("실행은되?");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        User user = userRepository.findOne(userSearchSpecification.searchWithEmailEqual(email)).orElseThrow(() -> new UserInfoNotFoundException("회원정보가 없습니다."));
-        if(!code.equals(user.getCode())){
-            throw new WrongPasswordException("코드가 틀립니다.");
+    public Role authEmail(String url) {
+        String email = getAuthenticationName();
+        User user = getUser(email);
+        if (!url.equals(user.getUrl())) {
+            throw new WrongAuthenticationUrlException("잘못된 Url 입니다.");
         }
         user.updateRole(Role.USER);
         userRepository.save(user);
-        return email;
+        return user.getRole();
     }
 }
 
