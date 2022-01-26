@@ -1,4 +1,4 @@
-package com.jeonggolee.helpanimal.common.execption;
+package com.jeonggolee.helpanimal.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
