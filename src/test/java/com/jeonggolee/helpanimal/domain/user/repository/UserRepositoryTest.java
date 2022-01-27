@@ -1,28 +1,27 @@
 package com.jeonggolee.helpanimal.domain.user.repository;
 
-import com.jeonggolee.helpanimal.domain.crew.domain.Crew;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
 import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @Transactional
+@ActiveProfiles("local")
 public class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private UserSearchSpecification userSearchSpecification;
 

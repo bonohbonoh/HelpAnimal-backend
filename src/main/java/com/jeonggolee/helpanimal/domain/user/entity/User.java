@@ -36,8 +36,8 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false) // 프로필 사진 필요시
     private String profileImage;
 
-    @Column(length = 6)
-    private String code;
+    @Column(length = 256)
+    private String url;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -50,8 +50,8 @@ public class User extends BaseTimeEntity {
         this.role = role;
     }
 
-    public void updateCode(String code) {
-        this.code = code;
+    public void updateUrl(String url) {
+        this.url = url;
     }
 
     public void updateProfileImage(String profileImage) {

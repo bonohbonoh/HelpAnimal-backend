@@ -33,7 +33,6 @@ public class UserServiceTest {
     private final String NICKNAME = "nickname";
     private final String IMAGE = "image";
     private final String NAME = "홍길동";
-    private String URL = "";
 
     @Autowired
     private UserService userService;
@@ -61,6 +60,12 @@ public class UserServiceTest {
                 .role(GUEST)
                 .build();
         userRepository.save(user);
+    }
+
+    public User findUser() {
+        return userRepository.findOne(searchSpecification.searchWithEmailEqual(EMAIL))
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 회원입니다."));
+
     }
 
     @Test
@@ -119,8 +124,7 @@ public class UserServiceTest {
     public void mailSendServiceTest() {
 
         //given
-        User user = userRepository.findOne(searchSpecification.searchWithEmailEqual(EMAIL))
-                .orElseThrow(() -> new UserNotFoundException("유저가 존재하지 않습니다."));
+        User user = findUser();
 
         //when
         String url = userService.sendEmail();
@@ -138,14 +142,13 @@ public class UserServiceTest {
         String url = userService.sendEmail();
 
         //when
-        Role role = userService.authEmail(url);
+        String role = userService.authEmail(url);
 
         //then
-        User user = userRepository.findOne(searchSpecification.searchWithEmailEqual(EMAIL))
-                .orElseThrow(() -> new UserNotFoundException("유저가 존재하지 않습니다."));
+        User user = findUser();
 
         assertThat(user.getUrl()).isEqualTo(url);
-        assertThat(user.getRole()).isEqualTo(role);
+        assertThat(user.getRole().toString()).isEqualTo(role);
     }
 
 

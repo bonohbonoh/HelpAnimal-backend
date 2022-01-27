@@ -1,19 +1,4 @@
 spring:
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: hsjy2016@gmail.com
-    password: wlduddl12!@
-    properties:
-      mail:
-        smtp:
-          starttls:
-            enable: true
-            required: true
-          auth: true
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
   config:
     activate:
       on-profile: local
@@ -48,3 +33,10 @@ spring:
     activate:
       on-profile: prod
     import: file:/app/config/backend/application.yml
+---
+spring:
+  config:
+    activate:
+      on-profile:
+    import: application-mail.yml
+

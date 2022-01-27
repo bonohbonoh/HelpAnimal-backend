@@ -84,7 +84,7 @@ public class UserService {
         return url;
     }
 
-    public Role authEmail(String url) {
+    public String authEmail(String url) {
         String email = getAuthenticationName();
         User user = getUser(email);
         if (!url.equals(user.getUrl())) {
@@ -92,7 +92,7 @@ public class UserService {
         }
         user.updateRole(Role.USER);
         userRepository.save(user);
-        return user.getRole();
+        return user.getRole().toString();
     }
 }
 

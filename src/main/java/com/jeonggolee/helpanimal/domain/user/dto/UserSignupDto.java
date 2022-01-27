@@ -36,7 +36,7 @@ public class UserSignupDto {
     @Size(min = 2, max = 30, message = "닉네임은 2글자에서 30글자 사이입니다.")
     private String nickname;
 
-    private String profileImag;
+    private String profileImage;
 
     private Role role;
 
