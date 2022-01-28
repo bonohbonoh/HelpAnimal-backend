@@ -5,6 +5,7 @@ import com.jeonggolee.helpanimal.domain.user.dto.UserInfoReadDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
 import com.jeonggolee.helpanimal.domain.user.service.UserService;
+import com.jeonggolee.helpanimal.domain.user.util.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,33 +23,27 @@ public class UserController {
 
     @PostMapping(value = "/")
     public ResponseEntity userSignup(@RequestBody @Valid UserSignupDto signUpDto) throws Exception {
-        boolean existUser = userService.signUpUser(signUpDto);
-        if (existUser) {
-            return new ResponseEntity(HttpStatus.CREATED);
-        }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        userService.signUpUser(signUpDto);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JwtTokenDto> userLogin(@RequestBody @Valid UserLoginDto dto) throws Exception {
-        String token = userService.loginUser(dto);
-        return new ResponseEntity<JwtTokenDto>(new JwtTokenDto(token), HttpStatus.OK);
+        return new ResponseEntity<JwtTokenDto>(userService.loginUser(dto), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/auth/my-page")
-    public ResponseEntity<UserInfoReadDto> userInfoReadDtoResponseEntity() throws Exception {
-        UserInfoReadDto userInfoReadDto = userService.userInfoReadDto();
-        return new ResponseEntity<UserInfoReadDto>(userInfoReadDto, HttpStatus.OK);
+    @GetMapping(value = "/auth/")
+    public ResponseEntity<UserInfoReadDto> userInfoReadDtoResponseEntity(@RequestParam String password) throws Exception {
+        return new ResponseEntity<UserInfoReadDto>(userService.userInfoReadDto(password), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/auth/{email}")
-    public String emailSendResponseEntity() throws Exception {
-        return userService.sendEmail();
+    @PostMapping(value = "/auth/")
+    public ResponseEntity<String> emailSendResponseEntity() throws Exception {
+        return new ResponseEntity<String>(userService.sendEmail(), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/auth/emailverify")
-    public ResponseEntity<String> emailAuthResponseEntity(@RequestBody String code) throws Exception {
-        userService.authEmail(code);
-        return new ResponseEntity<String>(HttpStatus.OK);
+    @PostMapping(value = "/auth/email-verify")
+    public ResponseEntity<String> emailAuthResponseEntity(@RequestBody String url) throws Exception {
+        return new ResponseEntity<String>(userService.authEmail(url), HttpStatus.OK);
     }
 }
