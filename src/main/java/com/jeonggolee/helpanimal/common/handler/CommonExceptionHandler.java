@@ -1,8 +1,8 @@
 package com.jeonggolee.helpanimal.common.handler;
 
-import com.jeonggolee.helpanimal.common.execption.AnimalNotFoundException;
-import com.jeonggolee.helpanimal.common.execption.RecruitmentNotFoundException;
-import com.jeonggolee.helpanimal.common.execption.UserNotFoundException;
+import com.jeonggolee.helpanimal.common.exception.AnimalNotFoundException;
+import com.jeonggolee.helpanimal.common.exception.RecruitmentNotFoundException;
+import com.jeonggolee.helpanimal.common.exception.UserNotFoundException;
 import com.jeonggolee.helpanimal.domain.user.exception.ExceptionStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

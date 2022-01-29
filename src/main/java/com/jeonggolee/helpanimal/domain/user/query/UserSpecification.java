@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class UserSearchSpecification {
+public class UserSpecification {
     //유저 ID로 조회
     public Specification<User> searchWithId(Long userId) {
         return (root, query, builder) -> {

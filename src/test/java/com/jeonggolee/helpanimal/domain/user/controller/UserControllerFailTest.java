@@ -1,14 +1,13 @@
 package com.jeonggolee.helpanimal.domain.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jeonggolee.helpanimal.common.dto.JwtTokenDto;
 import com.jeonggolee.helpanimal.common.exception.UserNotFoundException;
 import com.jeonggolee.helpanimal.common.jwt.JwtTokenProvider;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
 import com.jeonggolee.helpanimal.domain.user.exception.ExceptionStatus;
-import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
+import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import org.junit.jupiter.api.BeforeAll;
@@ -59,7 +58,7 @@ public class UserControllerFailTest {
     private UserRepository userRepository;
 
     @Autowired
-    private UserSearchSpecification searchSpecification;
+    private UserSpecification searchSpecification;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -238,7 +237,7 @@ public class UserControllerFailTest {
         User user = findUser();
         assertThat(user.getUrl()).isNotNull();
         assertThat(user.getRole()).isEqualTo(Role.GUEST);
-        ExceptionStatus e = objectMapper.readValue(result.getResponse().getContentAsString(),ExceptionStatus.class);
+        ExceptionStatus e = objectMapper.readValue(result.getResponse().getContentAsString(), ExceptionStatus.class);
         assertThat(e.getStatus()).isEqualTo(400);
 
     }

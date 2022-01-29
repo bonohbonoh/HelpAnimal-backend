@@ -33,8 +33,8 @@ public class UserController {
     }
 
     @GetMapping(value = "/auth/")
-    public ResponseEntity<UserInfoReadDto> userInfoReadDtoResponseEntity(@RequestParam String password) throws Exception {
-        return new ResponseEntity<UserInfoReadDto>(userService.userInfoReadDto(password), HttpStatus.OK);
+    public ResponseEntity<UserInfoReadDto> userInfoReadDtoResponseEntity() throws Exception {
+        return new ResponseEntity<UserInfoReadDto>(userService.getUserInfo(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/auth/")

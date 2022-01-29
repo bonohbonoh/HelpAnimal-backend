@@ -7,7 +7,7 @@ import com.jeonggolee.helpanimal.common.jwt.JwtTokenProvider;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
-import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
+import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import org.junit.jupiter.api.BeforeAll;
@@ -58,7 +58,7 @@ public class UserControllerTest {
     private UserRepository userRepository;
 
     @Autowired
-    private UserSearchSpecification searchSpecification;
+    private UserSpecification searchSpecification;
 
     @Autowired
     private PasswordEncoder passwordEncoder;

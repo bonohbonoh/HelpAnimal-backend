@@ -1,8 +1,8 @@
 package com.jeonggolee.helpanimal.domain.recruitment.service;
 
-import com.jeonggolee.helpanimal.common.execption.AnimalNotFoundException;
-import com.jeonggolee.helpanimal.common.execption.RecruitmentNotFoundException;
-import com.jeonggolee.helpanimal.common.execption.UserNotFoundException;
+import com.jeonggolee.helpanimal.common.exception.AnimalNotFoundException;
+import com.jeonggolee.helpanimal.common.exception.RecruitmentNotFoundException;
+import com.jeonggolee.helpanimal.common.exception.UserNotFoundException;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentRegistDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentUpdateDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentDetailDto;
@@ -106,7 +106,7 @@ public class RecruitmentService {
     }
 
     private void validateAuthor(User user) throws Exception {
-        UserInfoReadDto userInfoReadDto = userService.userInfoReadDto();
+        UserInfoReadDto userInfoReadDto = userService.getUserInfo();
         if (userInfoReadDto.getUserId() != user.getUserId()) {
             throw new RecruitmentNotOwnerException("해당 공고의 작성자가 아닙니다.");
         }

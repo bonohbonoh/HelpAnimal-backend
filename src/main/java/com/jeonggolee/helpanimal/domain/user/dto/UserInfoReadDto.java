@@ -14,6 +14,9 @@ import java.util.List;
 public class UserInfoReadDto {
 
     @NotEmpty
+    private Long userId;
+
+    @NotEmpty
     private String email;
 
     @NotEmpty
@@ -36,6 +39,6 @@ public class UserInfoReadDto {
         this.nickname = user.getNickname();
         this.profileImage = user.getProfileImage();
         this.role = user.getRole();
-        this.crewMemberList = user.getCrewMemberList();
+        this.crewMemberList = user.getCrewMembers();
     }
 }

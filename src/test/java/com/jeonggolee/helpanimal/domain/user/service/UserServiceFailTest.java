@@ -4,7 +4,7 @@ import com.jeonggolee.helpanimal.common.exception.UserNotFoundException;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
-import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
+import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
+@ActiveProfiles("local")
 public class UserServiceFailTest {
     private final Role GUEST = Role.GUEST;
     private final String EMAIL = "test@naver.com";
@@ -39,7 +41,7 @@ public class UserServiceFailTest {
     private UserRepository userRepository;
 
     @Autowired
-    private UserSearchSpecification searchSpecification;
+    private UserSpecification searchSpecification;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -95,20 +97,6 @@ public class UserServiceFailTest {
         assertThat(e.getMessage()).isEqualTo("잘못된 패스워드 입니다.");
     }
 
-    @Test
-    @WithUserDetails(EMAIL)
-    public void wrongPasswordReadUserInfoServiceTest() {
-
-        //given
-        String password = WRONG_PASSWORD;
-
-        //when
-        RuntimeException e = assertThrows(RuntimeException.class, () -> userService.userInfoReadDto(password));
-
-        //then
-        assertThat(e.getMessage()).isEqualTo("잘못된 패스워드 입니다.");
-
-    }
 
     @Test
     @WithUserDetails(EMAIL)

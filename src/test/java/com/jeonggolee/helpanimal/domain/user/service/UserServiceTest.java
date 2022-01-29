@@ -7,7 +7,7 @@ import com.jeonggolee.helpanimal.domain.user.dto.UserInfoReadDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
-import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
+import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
+@ActiveProfiles("local")
 public class UserServiceTest {
 
     private final Role GUEST = Role.GUEST;
@@ -41,7 +43,7 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     @Autowired
-    private UserSearchSpecification searchSpecification;
+    private UserSpecification searchSpecification;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -70,7 +72,8 @@ public class UserServiceTest {
 
     @Test
     public void signUpUserServiceTest() {
-        userRepository.deleteAll();
+        User user = findUser();
+        userRepository.delete(user);
 
         //given
         UserSignupDto dto = new UserSignupDto(EMAIL, PASSWORD, NAME, NICKNAME, IMAGE, GUEST);
@@ -102,14 +105,12 @@ public class UserServiceTest {
     }
 
     @Test
+    //given
     @WithUserDetails(EMAIL)
     public void readUserInfoServiceTest() {
 
-        //given
-        String password = PASSWORD;
-
         //when
-        UserInfoReadDto dto = userService.userInfoReadDto(password);
+        UserInfoReadDto dto = userService.getUserInfo();
 
         //then
         assertThat(dto.getEmail()).isEqualTo(EMAIL);

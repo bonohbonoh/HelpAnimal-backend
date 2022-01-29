@@ -44,7 +44,7 @@ public class User extends BaseTimeEntity {
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<CrewMember> crewMemberList;
+    private List<CrewMember> crewMembers;
 
     public void updateRole(Role role) {
         this.role = role;

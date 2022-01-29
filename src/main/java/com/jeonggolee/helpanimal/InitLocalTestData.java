@@ -39,7 +39,7 @@ public class InitLocalTestData {
                 .email(EMAIL)
                 .password(PASSWORD)
                 .nickname(NICKNAME)
-                .profileImag(IMAGE)
+                .profileImage(IMAGE)
                 .build());
 
         User user = userRepository.getById(1L);
