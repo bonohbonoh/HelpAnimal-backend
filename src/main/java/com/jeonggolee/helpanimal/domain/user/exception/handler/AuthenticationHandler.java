@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class AuthenticationHandler {
     @ExceptionHandler(WrongAuthenticationUrlException.class)
     public ResponseEntity<ExceptionStatus> wrongAuthenticationUrlException(WrongAuthenticationUrlException wrongAuthenticationUrl) {
-        ExceptionStatus response = new ExceptionStatus(wrongAuthenticationUrl.getMessage(), 400);
+        ExceptionStatus response = new ExceptionStatus(wrongAuthenticationUrl.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
     }
 }

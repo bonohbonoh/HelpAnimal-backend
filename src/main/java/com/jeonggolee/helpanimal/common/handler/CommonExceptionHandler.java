@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class CommonExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ExceptionStatus> userNotFoundException(UserNotFoundException e) {
-        ExceptionStatus response = new ExceptionStatus(e.getMessage(), 400);
+        ExceptionStatus response = new ExceptionStatus(e.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -23,19 +23,19 @@ public class CommonExceptionHandler {
         ExceptionStatus response = new ExceptionStatus(e.getBindingResult()
                 .getAllErrors()
                 .get(0)
-                .getDefaultMessage(), 400);
+                .getDefaultMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AnimalNotFoundException.class)
     public ResponseEntity<ExceptionStatus> animalNotFoundException(AnimalNotFoundException e) {
-        ExceptionStatus response = new ExceptionStatus(e.getMessage(), 400);
+        ExceptionStatus response = new ExceptionStatus(e.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RecruitmentNotFoundException.class)
     public ResponseEntity<ExceptionStatus> recruitmentNotFoundException(RecruitmentNotFoundException e) {
-        ExceptionStatus response = new ExceptionStatus(e.getMessage(), 400);
+        ExceptionStatus response = new ExceptionStatus(e.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
     }
 }

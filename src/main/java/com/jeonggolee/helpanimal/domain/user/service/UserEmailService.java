@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserEmailService {
 
     private final JavaMailSender emailSender;
@@ -21,6 +20,5 @@ public class UserEmailService {
         message.setSubject(sub);
         message.setText(text);
         emailSender.send(message);
-
     }
 }
