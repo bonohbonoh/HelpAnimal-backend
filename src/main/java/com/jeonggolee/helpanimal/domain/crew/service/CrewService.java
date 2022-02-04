@@ -13,7 +13,7 @@ import com.jeonggolee.helpanimal.domain.crew.query.CrewSpecification;
 import com.jeonggolee.helpanimal.domain.crew.repository.CrewMemberRepository;
 import com.jeonggolee.helpanimal.domain.crew.repository.CrewRepository;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
-import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
+import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +30,7 @@ public class CrewService {
     private final UserRepository userRepository;
 
     private final CrewSpecification cs;
-    private final UserSearchSpecification uss;
+    private final UserSpecification uss;
 
     //크루 생성
     public Long createCrew(CreateCrewDto createCrewDto, String masterEmail){

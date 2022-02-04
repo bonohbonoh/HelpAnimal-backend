@@ -1,4 +1,4 @@
-package com.jeonggolee.helpanimal.common.execption;
+package com.jeonggolee.helpanimal.common.exception;
 
 public class RecruitmentNotFoundException extends RuntimeException{
     public RecruitmentNotFoundException(String message) {

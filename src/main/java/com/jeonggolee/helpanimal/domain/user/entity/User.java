@@ -36,15 +36,22 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false) // 프로필 사진 필요시
     private String profileImage;
 
+    @Column(length = 256)
+    private String url;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<CrewMember> crewMemberList;
+    private List<CrewMember> crewMembers;
 
-    public String getRoleKey() {
-        return this.role.getKey();
+    public void updateRole(Role role) {
+        this.role = role;
+    }
+
+    public void updateUrl(String url) {
+        this.url = url;
     }
 
     public void updateProfileImage(String profileImage) {
@@ -67,5 +74,4 @@ public class User extends BaseTimeEntity {
         this.profileImage = profileImage;
         this.role = role;
     }
-
 }

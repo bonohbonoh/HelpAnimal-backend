@@ -15,19 +15,19 @@ import javax.servlet.http.HttpServletRequest;
 public class SignUpExceptionHandler {
     @ExceptionHandler(UserDuplicationException.class)
     public ResponseEntity<ExceptionStatus> duplicationException(UserDuplicationException duplicationException) {
-        ExceptionStatus response = new ExceptionStatus(duplicationException.getMessage(), 409);
+        ExceptionStatus response = new ExceptionStatus(duplicationException.getMessage(), HttpStatus.CONFLICT);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(UserInfoNotFoundException.class)
     public ResponseEntity<ExceptionStatus> userInfoNotFoundException(UserInfoNotFoundException userInfoNotFoundException) {
-        ExceptionStatus response = new ExceptionStatus(userInfoNotFoundException.getMessage(), 400);
+        ExceptionStatus response = new ExceptionStatus(userInfoNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionStatus> methodValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
-        ExceptionStatus response = new ExceptionStatus(e.getBindingResult().getFieldError().getDefaultMessage(), 400);
+        ExceptionStatus response = new ExceptionStatus(e.getBindingResult().getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
     }
 }

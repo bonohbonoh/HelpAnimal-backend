@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class LoginExceptionHandler {
     @ExceptionHandler(WrongPasswordException.class)
     public ResponseEntity<ExceptionStatus> wrongPasswordException(WrongPasswordException wrongPasswordException) {
-        ExceptionStatus response = new ExceptionStatus(wrongPasswordException.getMessage(), 403);
+        ExceptionStatus response = new ExceptionStatus(wrongPasswordException.getMessage(), HttpStatus.FORBIDDEN);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(EmailPasswordNullPointException.class)
     public ResponseEntity<ExceptionStatus> emailPasswordNullPointException(EmailPasswordNullPointException emailPasswordNullPointException) {
-        ExceptionStatus response = new ExceptionStatus(emailPasswordNullPointException.getMessage(), 400);
+        ExceptionStatus response = new ExceptionStatus(emailPasswordNullPointException.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
     }
 }

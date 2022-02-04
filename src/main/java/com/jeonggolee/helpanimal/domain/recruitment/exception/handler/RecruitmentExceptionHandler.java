@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class RecruitmentExceptionHandler {
     @ExceptionHandler(RecruitmentNotOwnerException.class)
     public ResponseEntity<ExceptionStatus> recruitmentNotOwnerException(RecruitmentNotOwnerException e) {
-        ExceptionStatus response = new ExceptionStatus(e.getMessage(), 400);
+        ExceptionStatus response = new ExceptionStatus(e.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
     }
 }

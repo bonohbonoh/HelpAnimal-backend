@@ -1,30 +1,29 @@
 package com.jeonggolee.helpanimal.domain.user.repository;
 
-import com.jeonggolee.helpanimal.domain.crew.domain.Crew;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
-import com.jeonggolee.helpanimal.domain.user.query.UserSearchSpecification;
+import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @Transactional
+@ActiveProfiles("local")
 public class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
-    private UserSearchSpecification userSearchSpecification;
+    private UserSpecification userSpecification;
 
     private static final Role GUEST = Role.GUEST;
     private static final String EMAIL = "test@test.com";
@@ -156,9 +155,9 @@ public class UserRepositoryTest {
         userRepository.save(user);
 
         //then
-        Optional<User> findUserEmail = userRepository.findOne(userSearchSpecification.searchWithEmail(EMAIL));
+        Optional<User> findUserEmail = userRepository.findOne(userSpecification.searchWithEmail(EMAIL));
         assertThat(findUserEmail.isPresent()).isTrue();
-        Optional<User> findUserNickname = userRepository.findOne(userSearchSpecification.searchWithNickname(NICKNAME));
+        Optional<User> findUserNickname = userRepository.findOne(userSpecification.searchWithNickname(NICKNAME));
         assertThat(findUserNickname.isPresent()).isTrue();
     }
 
@@ -180,9 +179,9 @@ public class UserRepositoryTest {
         userRepository.save(notSearchUser);
 
         //then
-        Optional<User> findUserEmail = userRepository.findOne(userSearchSpecification.searchWithEmail(EMAIL));
+        Optional<User> findUserEmail = userRepository.findOne(userSpecification.searchWithEmail(EMAIL));
         assertThat(findUserEmail.isPresent()).isFalse();
-        Optional<User> findUserNickname = userRepository.findOne(userSearchSpecification.searchWithNickname(NICKNAME));
+        Optional<User> findUserNickname = userRepository.findOne(userSpecification.searchWithNickname(NICKNAME));
         assertThat(findUserNickname.isPresent()).isFalse();
     }
 
