@@ -13,6 +13,7 @@ import com.jeonggolee.helpanimal.domain.user.entity.User;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +21,28 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
+import javax.transaction.Transactional;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ActiveProfiles("local")
 public class RecruitmentControllerTest {
     private final String NAME = "테스트공고";
     private final String EMAIL = "test1@naver.com";
     private final String CONTENT = "본문";
-    private final String ANIMAL = "DOG";
+    private final String ANIMAL = "DOG_";
     private final int PARTICIPANT = 10;
     private final RecruitmentMethod RECRUITMENT_METHOD = RecruitmentMethod.CHOICE;
     private final RecruitmentType RECRUITMENT_TYPE = RecruitmentType.FREE;
@@ -52,6 +62,19 @@ public class RecruitmentControllerTest {
 
     @Autowired
     private RecruitmentRepository recruitmentRepository;
+
+    @Autowired
+    private WebApplicationContext wac;
+
+
+    @BeforeEach
+    public void setup() {
+        this.mvc = MockMvcBuilders.webAppContextSetup(wac)
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))  // 필터 추가
+                .alwaysDo(print())
+                .build();
+    }
+
 
     @BeforeAll
     public void 유저_동물_등록() {

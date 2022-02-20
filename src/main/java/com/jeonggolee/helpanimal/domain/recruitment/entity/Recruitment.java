@@ -57,7 +57,7 @@ public class Recruitment extends BaseTimeEntity {
 
     /** 공고신청내역 */
     @OneToMany(mappedBy = "recruitment")
-    private List<RecruitmentApplicationDetail> recruitmentApplicationDetails;
+    private List<RecruitmentApplication> recruitmentApplications;
 
     public void updateRecruitmentName(String name) {
         this.name = name;

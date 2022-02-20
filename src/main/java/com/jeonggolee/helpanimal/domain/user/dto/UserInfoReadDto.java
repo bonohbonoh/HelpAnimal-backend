@@ -34,6 +34,7 @@ public class UserInfoReadDto {
     private List<CrewMember> crewMemberList;
 
     public UserInfoReadDto(User user) {
+        this.userId = user.getUserId();
         this.email = user.getEmail();
         this.name = user.getName();
         this.nickname = user.getNickname();

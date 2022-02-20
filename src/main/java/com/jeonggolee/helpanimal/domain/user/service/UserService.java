@@ -60,7 +60,7 @@ public class UserService {
         if (!isMatchingPassword) {
             throw new WrongPasswordException("잘못된 패스워드 입니다.");
         }
-        return new JwtTokenDto(provider.generateToken(dto.getEmail(), Collections.singleton(new SimpleGrantedAuthority(user.getRole().toString()))));
+        return new JwtTokenDto(provider.generateToken(dto.getEmail(), Collections.singleton(new SimpleGrantedAuthority(user.getRole().getKey()))));
     }
 
     public UserInfoReadDto getUserInfo() {

@@ -1,6 +1,7 @@
 package com.jeonggolee.helpanimal.common.handler;
 
 import com.jeonggolee.helpanimal.common.exception.AnimalNotFoundException;
+import com.jeonggolee.helpanimal.common.exception.RecruitmentApplicationNotFoundException;
 import com.jeonggolee.helpanimal.common.exception.RecruitmentNotFoundException;
 import com.jeonggolee.helpanimal.common.exception.UserNotFoundException;
 import com.jeonggolee.helpanimal.domain.user.exception.ExceptionStatus;
@@ -35,6 +36,12 @@ public class CommonExceptionHandler {
 
     @ExceptionHandler(RecruitmentNotFoundException.class)
     public ResponseEntity<ExceptionStatus> recruitmentNotFoundException(RecruitmentNotFoundException e) {
+        ExceptionStatus response = new ExceptionStatus(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RecruitmentApplicationNotFoundException.class)
+    public ResponseEntity<ExceptionStatus> recruitmentApplicationNotFoundException(RecruitmentApplicationNotFoundException e) {
         ExceptionStatus response = new ExceptionStatus(e.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
     }
