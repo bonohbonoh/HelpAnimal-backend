@@ -27,7 +27,7 @@ public class UserDetailService implements UserDetailsService {
                 User user = userRepository.findOne(userSpecification.searchWithEmailEqual(email))
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
-        return new User(user.getEmail(), user.getPassword(), Collections.singleton(new SimpleGrantedAuthority(user.getRole().toString())));
+        return new User(user.getEmail(), user.getPassword(), Collections.singleton(new SimpleGrantedAuthority(user.getRole().getKey())));
     }
 
 }

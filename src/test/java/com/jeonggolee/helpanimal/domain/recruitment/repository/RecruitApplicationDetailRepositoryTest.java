@@ -1,10 +1,14 @@
 package com.jeonggolee.helpanimal.domain.recruitment.repository;
 
-import com.jeonggolee.helpanimal.domain.recruitment.entity.RecruitmentApplicationDetail;
+import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentApplicationDetailDto;
+import com.jeonggolee.helpanimal.domain.recruitment.entity.RecruitmentApplication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -15,12 +19,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 public class RecruitApplicationDetailRepositoryTest {
     @Autowired
-    private RecruitmentApplicationDetailRepository recruitmentApplicationDetailRepository;
+    private RecruitmentApplicationRepository recruitmentApplicationRepository;
 
     private static final String comment = "TEST";
 
-    private RecruitmentApplicationDetail initEntity() {
-        return RecruitmentApplicationDetail.builder()
+    private RecruitmentApplication initEntity() {
+        return RecruitmentApplication.builder()
                 .comment(comment)
                 .build();
     }
@@ -29,24 +33,24 @@ public class RecruitApplicationDetailRepositoryTest {
     @DisplayName("공고신청내역 등록")
     void 공고신청내역등록() {
         //given
-        RecruitmentApplicationDetail recruitmentApplicationDetail = initEntity();
+        RecruitmentApplication recruitmentApplication = initEntity();
 
         //when
-        Long id = recruitmentApplicationDetailRepository.save(recruitmentApplicationDetail).getId();
+        Long id = recruitmentApplicationRepository.save(recruitmentApplication).getId();
 
         //then
-        assertThat(recruitmentApplicationDetailRepository.findById(id).isPresent()).isTrue();
+        assertThat(recruitmentApplicationRepository.findById(id).isPresent()).isTrue();
     }
 
     @Test
     @DisplayName("공고신청내역 ID로 조회")
     void 공고신청내역ID로_조회() {
         //given
-        RecruitmentApplicationDetail recruitmentApplicationDetail = initEntity();
-        Long id = recruitmentApplicationDetailRepository.save(recruitmentApplicationDetail).getId();
+        RecruitmentApplication recruitmentApplication = initEntity();
+        Long id = recruitmentApplicationRepository.save(recruitmentApplication).getId();
 
         //when
-        Optional<RecruitmentApplicationDetail> findRecruitmentApplicationDetail = recruitmentApplicationDetailRepository.findById(id);
+        Optional<RecruitmentApplication> findRecruitmentApplicationDetail = recruitmentApplicationRepository.findById(id);
 
         //then
         assertThat(findRecruitmentApplicationDetail.isPresent()).isTrue();
@@ -59,7 +63,7 @@ public class RecruitApplicationDetailRepositoryTest {
         Long id = 1000L;
 
         //when
-        Optional<RecruitmentApplicationDetail> recruitmentApplicationDetail = recruitmentApplicationDetailRepository.findById(id);
+        Optional<RecruitmentApplication> recruitmentApplicationDetail = recruitmentApplicationRepository.findById(id);
 
         //then
         assertThat(recruitmentApplicationDetail.isPresent()).isFalse();
@@ -69,29 +73,57 @@ public class RecruitApplicationDetailRepositoryTest {
     @DisplayName("공고신청내역 수정")
     void 공고신청내역수정() {
         //given
-        RecruitmentApplicationDetail recruitmentApplicationDetail = initEntity();
-        recruitmentApplicationDetailRepository.save(recruitmentApplicationDetail);
+        RecruitmentApplication recruitmentApplication = initEntity();
+        recruitmentApplicationRepository.save(recruitmentApplication);
 
         //when
-        recruitmentApplicationDetail.updateComment("수정");
-        RecruitmentApplicationDetail updateRecruitmentApplicationDetail = recruitmentApplicationDetailRepository.save(recruitmentApplicationDetail);
+        recruitmentApplication.updateComment("수정");
+        RecruitmentApplication updateRecruitmentApplication = recruitmentApplicationRepository.save(recruitmentApplication);
 
         //then
-        assertThat(updateRecruitmentApplicationDetail.getComment()).isEqualTo(updateRecruitmentApplicationDetail.getComment());
+        assertThat(updateRecruitmentApplication.getComment()).isEqualTo(updateRecruitmentApplication.getComment());
     }
 
     @Test
     @DisplayName("공고신청내역 삭제")
     void 공고신청내역삭제() {
         //given
-        RecruitmentApplicationDetail recruitmentApplicationDetail = initEntity();
-        Long id = recruitmentApplicationDetailRepository.save(recruitmentApplicationDetail).getId();
+        RecruitmentApplication recruitmentApplication = initEntity();
+        Long id = recruitmentApplicationRepository.save(recruitmentApplication).getId();
 
         //when
-        recruitmentApplicationDetailRepository.delete(recruitmentApplicationDetail);
+        recruitmentApplicationRepository.delete(recruitmentApplication);
 
         //then
-        Optional<RecruitmentApplicationDetail> deleteRecruitmentApplicationDetail = recruitmentApplicationDetailRepository.findById(id);
+        Optional<RecruitmentApplication> deleteRecruitmentApplicationDetail = recruitmentApplicationRepository.findById(id);
         assertThat(deleteRecruitmentApplicationDetail.isPresent()).isFalse();
+    }
+
+    @Test
+    @DisplayName("공고내역_공고로_조회_페이징")
+    void 공고내역_공고로_조회_페이징() {
+        //given
+
+        Pageable pageable = PageRequest.of(0, 10);
+        //when
+        Page<RecruitmentApplicationDetailDto> pages = recruitmentApplicationRepository
+                .findRecruitmentApplicationByRecruitment(pageable, 1L);
+        //then
+        assertThat(pages.getNumberOfElements()).isEqualTo(10);
+        assertThat(pages.getTotalElements()).isEqualTo(12L);
+    }
+
+    @Test
+    @DisplayName("공고내역_유저로_조회_페이징")
+    void 공고내역_유저로_조회_페이징() {
+        //given
+
+        Pageable pageable = PageRequest.of(0, 10);
+        //when
+        Page<RecruitmentApplicationDetailDto> pages = recruitmentApplicationRepository
+                .findRecruitmentApplicationByUserId(pageable, 1L);
+        //then
+        assertThat(pages.getNumberOfElements()).isEqualTo(10);
+        assertThat(pages.getTotalElements()).isEqualTo(12L);
     }
 }
