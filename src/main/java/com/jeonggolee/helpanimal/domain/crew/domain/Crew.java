@@ -23,9 +23,14 @@ public class Crew extends BaseTimeEntity {
     @Column(length = 20, nullable = false, unique = true)
     private String name;
 
+    @Column(length = 500)
+    private String introduction;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "crew_id")
     private List<CrewMember> crewMemberList;
+
+    //TODO: 파일 엔티티가 추가되면 OneToOne 추가
 
     //TODO: 공고 테이블이 추가되면 OneToMany 추가
 
