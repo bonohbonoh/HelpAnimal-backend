@@ -1,6 +1,7 @@
 package com.jeonggolee.helpanimal.domain.recruitment.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentApplicationRequestDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentApplicationDetailDto;
@@ -51,12 +52,12 @@ public class RecruitmentRequestServiceTest {
             .build();
     }
 
-    private User initUser(String email) {
+    private User initUser(String email, String nickname) {
         return User.builder()
             .email(email)
             .password("PASSWORD")
             .name("NAME")
-            .nickname("NICKNAME")
+            .nickname(nickname)
             .profileImage("IMAGE")
             .role(Role.GUEST)
             .build();
@@ -77,7 +78,7 @@ public class RecruitmentRequestServiceTest {
     @Test
     void 공고신청() {
         //given
-        User user = initUser("EMAIL");
+        User user = initUser("EMAIL", "nick");
         Recruitment recruitment = initRecruitment(user, "NAME");
 
         userRepository.save(user);
@@ -98,7 +99,7 @@ public class RecruitmentRequestServiceTest {
     @Test
     void 신청내역_삭제() {
         //given
-        User user = initUser("EMAIL");
+        User user = initUser("EMAIL", "nick");
         Recruitment recruitment = initRecruitment(user, "NAME");
         RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, user, "TEST");
 
@@ -118,7 +119,7 @@ public class RecruitmentRequestServiceTest {
     @Test
     void 해당공고_신청내역_조회() {
         //given
-        User user = initUser("EMAIL");
+        User user = initUser("EMAIL", "nick");
         Recruitment recruitment = initRecruitment(user, "NAME");
 
         userRepository.save(user);
@@ -143,7 +144,7 @@ public class RecruitmentRequestServiceTest {
     @Test
     void 해당유저_신청내역_조회() {
         //given
-        User user = initUser("EMAIL");
+        User user = initUser("EMAIL", "nick");
         List<Recruitment> recruitments = new ArrayList<>();
         userRepository.save(user);
         for (int i = 0; i < 12; i++) {
@@ -169,7 +170,7 @@ public class RecruitmentRequestServiceTest {
     @Test
     void 참여신청_상세조회() {
         //given
-        User user = initUser("EMAIL");
+        User user = initUser("EMAIL", "nick");
         Recruitment recruitment = initRecruitment(user, "NAME");
 
         userRepository.save(user);
@@ -186,6 +187,33 @@ public class RecruitmentRequestServiceTest {
         assertThat(result.getRecruitmentName()).isEqualTo(recruitment.getName());
         assertThat(result.getEmail()).isEqualTo(user.getEmail());
         assertThat(result.getComment()).isEqualTo("COMMENT");
+    }
 
+    @Test
+    void 참가신청_인원이_다_찼을땐_오류발생() {
+        //given
+        User user = initUser("EMAIL", "nick");
+        User requestUser = initUser("EMAIL1", "nick1");
+        User exceptionUser = initUser("EMAIL2", "nick2");
+        Recruitment recruitment = initRecruitment(user, "NAME");
+
+        userRepository.saveAll(List.of(user, requestUser, exceptionUser));
+        recruitmentRepository.save(recruitment);
+
+        RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, requestUser,
+            "TEST");
+        recruitmentRequestRepository.save(recruitmentRequest);
+
+        //when
+        RecruitmentApplicationRequestDto dto = RecruitmentApplicationRequestDto.builder()
+            .email("EMAIL2")
+            .recruitmentId(recruitment.getId())
+            .comment("TEST")
+            .build();
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+            () -> recruitmentRequestService.requestRecruitment(dto));
+
+        //then
+        assertThat(exception.getMessage()).isEqualTo("인원이 다 찼습니다.");
     }
 }

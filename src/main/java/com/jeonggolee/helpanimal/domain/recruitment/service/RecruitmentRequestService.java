@@ -33,13 +33,9 @@ public class RecruitmentRequestService {
 
     @Transactional
     public Long requestRecruitment(RecruitmentApplicationRequestDto dto) {
-        /**
-         * 1. 유저 조회
-         * 2. 공고 조회
-         * 3. 기존 접수내역 삭제처리
-         */
         User requestUser = findUser(dto.getEmail());
         Recruitment recruitment = findRecruitment(dto.getRecruitmentId());
+        validateAvailableRequest(recruitment);
         deleteRecruitmentApplicationHistory(recruitment.getId(), requestUser.getUserId());
         RecruitmentRequest request = RecruitmentRequest.builder()
             .comment(dto.getComment())
@@ -110,15 +106,6 @@ public class RecruitmentRequestService {
             .build();
     }
 
-    private User findUser(String email) {
-        return userRepository.findByEmailAndDeletedAtNull(email).orElseThrow(
-            () -> new UserNotFoundException("존재하지 않는 회원입니다."));
-    }
-
-    private Recruitment findRecruitment(Long recruitmentId) {
-        return recruitmentRepository.findByIdAndDeletedAtIsNull(recruitmentId).orElseThrow(
-            () -> new RecruitmentNotFoundException("해당 공고가 존재하지 않습니다."));
-    }
 
     @Transactional
     public void deleteRecruitmentApplicationHistory(Long rid, Long userId) {
@@ -140,7 +127,32 @@ public class RecruitmentRequestService {
             .build();
     }
 
+    private void validateAvailableRequest(Recruitment recruitment) {
+        if (currentParticipants(recruitment) >= recruitment.getParticipant()) {
+            throw new IllegalStateException("인원이 다 찼습니다.");
+        }
+    }
+
+    private User findUser(String email) {
+        return userRepository.findByEmailAndDeletedAtNull(email).orElseThrow(
+            () -> new UserNotFoundException("존재하지 않는 회원입니다."));
+    }
+
+    private Recruitment findRecruitment(Long recruitmentId) {
+        return recruitmentRepository.findByIdAndDeletedAtIsNull(recruitmentId).orElseThrow(
+            () -> new RecruitmentNotFoundException("해당 공고가 존재하지 않습니다."));
+    }
+
     private Optional<RecruitmentRequest> findByIdAndDeletedAtIsNull(Long id) {
         return recruitmentRequestRepository.findByIdAndDeletedAtIsNull(id);
     }
+
+    private List<RecruitmentRequest> findByRecruitmentAndDeletedAtIsNull(Recruitment recruitment) {
+        return recruitmentRequestRepository.findByRecruitmentAndDeletedAtIsNull(recruitment);
+    }
+
+    private int currentParticipants(Recruitment recruitment) {
+        return findByRecruitmentAndDeletedAtIsNull(recruitment).size();
+    }
+
 }
