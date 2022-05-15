@@ -44,7 +44,7 @@ public class ResponseDto<T> {
     private static class Error {
 
         private String message;
-        
+
         @Builder
         private Error(String message) {
             this.message = message;
