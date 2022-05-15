@@ -1,18 +1,24 @@
 package com.jeonggolee.helpanimal.domain.recruitment.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentApplicationRequestDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentApplicationDetailDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentApplicationSearchDto;
 import com.jeonggolee.helpanimal.domain.recruitment.entity.Recruitment;
-import com.jeonggolee.helpanimal.domain.recruitment.entity.RecruitmentApplication;
+import com.jeonggolee.helpanimal.domain.recruitment.entity.RecruitmentRequest;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentApplicationStatus;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentMethod;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentType;
-import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentApplicationRepository;
 import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRepository;
+import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRequestRepository;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import javax.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,56 +27,51 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest
 @Transactional
 @ActiveProfiles("local")
-public class RecruitmentApplicationServiceTest {
+public class RecruitmentRequestServiceTest {
+
     @Autowired
-    private RecruitmentApplicationService recruitmentApplicationService;
+    private RecruitmentRequestService recruitmentRequestService;
     @Autowired
-    private RecruitmentApplicationRepository recruitmentApplicationRepository;
+    private RecruitmentRequestRepository recruitmentRequestRepository;
     @Autowired
     private RecruitmentRepository recruitmentRepository;
     @Autowired
     private UserRepository userRepository;
 
-    private RecruitmentApplication initRecruitmentApplication(Recruitment recruitment, User user, String comment) {
-        return RecruitmentApplication.builder()
-                .recruitment(recruitment)
-                .user(user)
-                .comment(comment)
-                .status(RecruitmentApplicationStatus.REQUEST)
-                .build();
+    private RecruitmentRequest initRecruitmentRequest(Recruitment recruitment, User user,
+        String comment) {
+        return RecruitmentRequest.builder()
+            .recruitment(recruitment)
+            .user(user)
+            .comment(comment)
+            .status(RecruitmentApplicationStatus.REQUEST)
+            .build();
     }
 
     private User initUser(String email) {
         return User.builder()
-                .email(email)
-                .password("PASSWORD")
-                .name("NAME")
-                .nickname("NICKNAME")
-                .profileImage("IMAGE")
-                .role(Role.GUEST)
-                .build();
+            .email(email)
+            .password("PASSWORD")
+            .name("NAME")
+            .nickname("NICKNAME")
+            .profileImage("IMAGE")
+            .role(Role.GUEST)
+            .build();
     }
 
     private Recruitment initRecruitment(User user, String name) {
         return Recruitment.builder()
-                .name(name)
-                .recruitmentType(RecruitmentType.FREE)
-                .content("CONTENT")
-                .participant(1)
-                .user(user)
-                .imageUrl("TEST")
-                .recruitmentMethod(RecruitmentMethod.FIRST_COME)
-                .build();
+            .name(name)
+            .recruitmentType(RecruitmentType.FREE)
+            .content("CONTENT")
+            .participant(1)
+            .user(user)
+            .imageUrl("TEST")
+            .recruitmentMethod(RecruitmentMethod.FIRST_COME)
+            .build();
     }
 
     @Test
@@ -83,14 +84,14 @@ public class RecruitmentApplicationServiceTest {
         recruitmentRepository.save(recruitment);
 
         RecruitmentApplicationRequestDto dto = RecruitmentApplicationRequestDto.builder()
-                .email("EMAIL")
-                .recruitmentId(recruitment.getId())
-                .comment("TEST")
-                .build();
+            .email("EMAIL")
+            .recruitmentId(recruitment.getId())
+            .comment("TEST")
+            .build();
         //when
-        recruitmentApplicationService.requestRecruitment(dto);
+        recruitmentRequestService.requestRecruitment(dto);
         //then
-        List<RecruitmentApplication> results = recruitmentApplicationRepository.findAll();
+        List<RecruitmentRequest> results = recruitmentRequestRepository.findAll();
         assertThat(results.size() > 0).isTrue();
     }
 
@@ -99,18 +100,18 @@ public class RecruitmentApplicationServiceTest {
         //given
         User user = initUser("EMAIL");
         Recruitment recruitment = initRecruitment(user, "NAME");
-        RecruitmentApplication recruitmentApplication = initRecruitmentApplication(recruitment, user, "TEST");
+        RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, user, "TEST");
 
         userRepository.save(user);
         recruitmentRepository.save(recruitment);
-        recruitmentApplicationRepository.save(recruitmentApplication);
+        recruitmentRequestRepository.save(recruitmentRequest);
 
         //when
-        recruitmentApplicationService.deleteRecruitmentApplication(recruitmentApplication.getId());
+        recruitmentRequestService.deleteRecruitmentApplication(recruitmentRequest.getId());
 
         //then
-        Optional<RecruitmentApplication> result = recruitmentApplicationRepository
-                .findByIdAndUserAndDeletedAtIsNull(recruitmentApplication.getId(), user);
+        Optional<RecruitmentRequest> result = recruitmentRequestRepository
+            .findByIdAndUserAndDeletedAtIsNull(recruitmentRequest.getId(), user);
         assertThat(result.isPresent()).isFalse();
     }
 
@@ -124,14 +125,16 @@ public class RecruitmentApplicationServiceTest {
         recruitmentRepository.save(recruitment);
 
         for (int i = 0; i < 12; i++) {
-            RecruitmentApplication recruitmentApplication = initRecruitmentApplication(recruitment, user, "TEST" + i);
-            recruitmentApplicationRepository.save(recruitmentApplication);
+            RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, user,
+                "TEST" + i);
+            recruitmentRequestRepository.save(recruitmentRequest);
 
         }
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("createDate").descending());
         //when
-        RecruitmentApplicationSearchDto dto = recruitmentApplicationService.findRecruitmentApplicationByRecruitment(pageable, recruitment.getId());
+        RecruitmentApplicationSearchDto dto = recruitmentRequestService.findRecruitmentApplicationByRecruitment(
+            pageable, recruitment.getId());
         //then
         assertThat(dto.getNumberOfElements()).isEqualTo(10);
         assertThat(dto.getTotalElements()).isEqualTo(12L);
@@ -149,13 +152,15 @@ public class RecruitmentApplicationServiceTest {
             recruitments.add(recruitment);
         }
         for (Recruitment recruitment : recruitments) {
-            RecruitmentApplication recruitmentApplication = initRecruitmentApplication(recruitment, user, "TEST");
-            recruitmentApplicationRepository.save(recruitmentApplication);
+            RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, user,
+                "TEST");
+            recruitmentRequestRepository.save(recruitmentRequest);
         }
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("createDate").descending());
         //when
-        RecruitmentApplicationSearchDto dto = recruitmentApplicationService.findRecruitmentApplicationByUser(pageable, user.getUserId());
+        RecruitmentApplicationSearchDto dto = recruitmentRequestService.findRecruitmentApplicationByUser(
+            pageable, user.getUserId());
         //then
         assertThat(dto.getNumberOfElements()).isEqualTo(10);
         assertThat(dto.getTotalElements()).isEqualTo(12L);
@@ -170,11 +175,12 @@ public class RecruitmentApplicationServiceTest {
         userRepository.save(user);
         recruitmentRepository.save(recruitment);
 
-        RecruitmentApplication recruitmentApplication = initRecruitmentApplication(recruitment, user,"COMMENT");
-        Long requestId = recruitmentApplicationRepository.save(recruitmentApplication).getId();
+        RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, user,
+            "COMMENT");
+        Long requestId = recruitmentRequestRepository.save(recruitmentRequest).getId();
 
         //when
-        RecruitmentApplicationDetailDto result = recruitmentApplicationService.findById(requestId);
+        RecruitmentApplicationDetailDto result = recruitmentRequestService.findById(requestId);
 
         //then
         assertThat(result.getRecruitmentName()).isEqualTo(recruitment.getName());

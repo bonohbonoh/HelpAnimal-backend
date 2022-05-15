@@ -7,12 +7,13 @@ import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentAppli
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentApplicationDetailDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentApplicationSearchDto;
 import com.jeonggolee.helpanimal.domain.recruitment.entity.Recruitment;
-import com.jeonggolee.helpanimal.domain.recruitment.entity.RecruitmentApplication;
+import com.jeonggolee.helpanimal.domain.recruitment.entity.RecruitmentRequest;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentApplicationStatus;
-import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentApplicationRepository;
+import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRequestRepository;
 import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRepository;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,8 +26,8 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RecruitmentApplicationService {
-    private final RecruitmentApplicationRepository recruitmentApplicationRepository;
+public class RecruitmentRequestService {
+    private final RecruitmentRequestRepository recruitmentRequestRepository;
     private final UserRepository userRepository;
     private final RecruitmentRepository recruitmentRepository;
 
@@ -40,7 +41,7 @@ public class RecruitmentApplicationService {
         User requestUser = findUser(dto.getEmail());
         Recruitment recruitment = findRecruitment(dto.getRecruitmentId());
         deleteRecruitmentApplicationHistory(recruitment.getId(), requestUser.getUserId());
-        return recruitmentApplicationRepository.save(RecruitmentApplication.builder()
+        return recruitmentRequestRepository.save(RecruitmentRequest.builder()
                 .recruitment(recruitment)
                 .user(requestUser)
                 .comment(dto.getComment())
@@ -51,13 +52,13 @@ public class RecruitmentApplicationService {
 
     @Transactional
     public void deleteRecruitmentApplication(Long id) {
-        RecruitmentApplication recruitmentApplication = recruitmentApplicationRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(
+        RecruitmentRequest recruitmentRequest = findByIdAndDeletedAtIsNull(id).orElseThrow(
                 () -> new RecruitmentApplicationNotFoundException("해당 신청내역이 존재하지 않습니다."));
-        recruitmentApplication.delete();
+        recruitmentRequest.delete();
     }
 
     public RecruitmentApplicationSearchDto findRecruitmentApplicationByRecruitment(Pageable pageable, Long id) {
-        Page<RecruitmentApplicationDetailDto> resultWithPaging = recruitmentApplicationRepository
+        Page<RecruitmentApplicationDetailDto> resultWithPaging = recruitmentRequestRepository
                 .findRecruitmentApplicationByRecruitment(pageable, id);
 
         List<RecruitmentApplicationDetailDto> data = resultWithPaging
@@ -80,7 +81,7 @@ public class RecruitmentApplicationService {
     }
 
     public RecruitmentApplicationSearchDto findRecruitmentApplicationByUser(Pageable pageable, Long userId) {
-        Page<RecruitmentApplicationDetailDto> resultWithPaging = recruitmentApplicationRepository
+        Page<RecruitmentApplicationDetailDto> resultWithPaging = recruitmentRequestRepository
                 .findRecruitmentApplicationByUserId(pageable, userId);
 
         List<RecruitmentApplicationDetailDto> data = resultWithPaging
@@ -114,21 +115,25 @@ public class RecruitmentApplicationService {
 
     @Transactional
     public void deleteRecruitmentApplicationHistory(Long rid, Long userId) {
-        List<RecruitmentApplication> history = recruitmentApplicationRepository.findByHistory(rid, userId);
+        List<RecruitmentRequest> history = recruitmentRequestRepository.findByHistory(rid, userId);
         history.forEach(entities -> entities.delete());
     }
 
 
     public RecruitmentApplicationDetailDto findById(Long id) {
-        RecruitmentApplication recruitmentApplication = recruitmentApplicationRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(
+        RecruitmentRequest recruitmentRequest = findByIdAndDeletedAtIsNull(id).orElseThrow(
                 ()-> new RecruitmentApplicationNotFoundException("해당 신청내역이 존재하지 않습니다."));
         return RecruitmentApplicationDetailDto.builder()
-                .id(recruitmentApplication.getId())
-                .recruitmentId(recruitmentApplication.getRecruitment().getId())
-                .recruitmentName(recruitmentApplication.getRecruitment().getName())
-                .email(recruitmentApplication.getUser().getEmail())
-                .comment(recruitmentApplication.getComment())
-                .status(recruitmentApplication.getStatus())
+                .id(recruitmentRequest.getId())
+                .recruitmentId(recruitmentRequest.getRecruitment().getId())
+                .recruitmentName(recruitmentRequest.getRecruitment().getName())
+                .email(recruitmentRequest.getUser().getEmail())
+                .comment(recruitmentRequest.getComment())
+                .status(recruitmentRequest.getStatus())
                 .build();
+    }
+
+    private Optional<RecruitmentRequest> findByIdAndDeletedAtIsNull(Long id) {
+        return recruitmentRequestRepository.findByIdAndDeletedAtIsNull(id);
     }
 }

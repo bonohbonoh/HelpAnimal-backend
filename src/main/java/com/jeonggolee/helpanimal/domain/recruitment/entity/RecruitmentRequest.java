@@ -15,7 +15,9 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-public class RecruitmentApplication extends BaseTimeEntity {
+@Table(name = "recruitment_requests")
+public class RecruitmentRequest extends BaseTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,6 +36,7 @@ public class RecruitmentApplication extends BaseTimeEntity {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private RecruitmentApplicationStatus status;
+
     public void updateComment(String comment) {
         this.comment = comment;
     }

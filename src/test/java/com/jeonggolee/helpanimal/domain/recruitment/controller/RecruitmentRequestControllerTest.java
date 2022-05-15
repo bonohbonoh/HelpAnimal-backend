@@ -5,7 +5,7 @@ import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentAppli
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentApplicationDetailDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentApplicationSearchDto;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentApplicationStatus;
-import com.jeonggolee.helpanimal.domain.recruitment.service.RecruitmentApplicationService;
+import com.jeonggolee.helpanimal.domain.recruitment.service.RecruitmentRequestService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("local")
-public class RecruitmentApplicationControllerTest {
+public class RecruitmentRequestControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -46,7 +46,7 @@ public class RecruitmentApplicationControllerTest {
     private WebApplicationContext wac;
 
     @MockBean
-    private RecruitmentApplicationService recruitmentApplicationService;
+    private RecruitmentRequestService recruitmentRequestService;
 
 
     @BeforeEach
@@ -66,10 +66,10 @@ public class RecruitmentApplicationControllerTest {
                 .recruitmentId(1L)
                 .build();
 
-        when(recruitmentApplicationService.requestRecruitment(any())).thenReturn(1L);
+        when(recruitmentRequestService.requestRecruitment(any())).thenReturn(1L);
 
         String content = objectMapper.writeValueAsString(dto);
-        mvc.perform(MockMvcRequestBuilders.post("/api/v1/recruitment/apply")
+        mvc.perform(MockMvcRequestBuilders.post("/api/v1/recruitments/requests")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content))
@@ -79,8 +79,8 @@ public class RecruitmentApplicationControllerTest {
     @Test
     @WithMockUser(username = "test1@naver.com", roles = {"USER"})
     void 참여신청_삭제() throws Exception {
-        doNothing().when(recruitmentApplicationService).deleteRecruitmentApplication(anyLong());
-        mvc.perform(MockMvcRequestBuilders.delete("/api/v1/recruitment/apply/"+1L)
+        doNothing().when(recruitmentRequestService).deleteRecruitmentApplication(anyLong());
+        mvc.perform(MockMvcRequestBuilders.delete("/api/v1/recruitments/requests/"+1L)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -90,14 +90,14 @@ public class RecruitmentApplicationControllerTest {
     @WithMockUser(username = "test1@naver.com", roles = {"USER"})
     void 참여신청내역_유저로_조회_페이징() throws Exception {
 
-        when(recruitmentApplicationService.findRecruitmentApplicationByUser(any(),anyLong()))
+        when(recruitmentRequestService.findRecruitmentApplicationByUser(any(),anyLong()))
                 .thenReturn(RecruitmentApplicationSearchDto.builder()
                         .numberOfElements(0)
                         .totalElements(10L)
                         .data(new ArrayList<>())
                         .build());
 
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/recruitment/apply/user/1?page=0&size=10")
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/recruitments/requests/user/1?page=0&size=10")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -109,14 +109,14 @@ public class RecruitmentApplicationControllerTest {
     @WithMockUser(username = "test1@naver.com", roles = {"USER"})
     void 참여신청내역_공고로_조회_페이징() throws Exception {
 
-        when(recruitmentApplicationService.findRecruitmentApplicationByRecruitment(any(),anyLong()))
+        when(recruitmentRequestService.findRecruitmentApplicationByRecruitment(any(),anyLong()))
                 .thenReturn(RecruitmentApplicationSearchDto.builder()
                         .numberOfElements(0)
                         .totalElements(10L)
                         .data(new ArrayList<>())
                         .build());
 
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/recruitment/apply/recruitment/1?page=0&size=10")
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/recruitments/1/requests?page=0&size=10")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -129,7 +129,7 @@ public class RecruitmentApplicationControllerTest {
     @WithMockUser(username = "test1@naver.com", roles = {"USER"})
     void 공고_상세조회() throws Exception {
 
-        when(recruitmentApplicationService.findById(anyLong()))
+        when(recruitmentRequestService.findById(anyLong()))
                 .thenReturn(RecruitmentApplicationDetailDto.builder()
                         .id(1L)
                         .recruitmentId(1L)
@@ -139,7 +139,7 @@ public class RecruitmentApplicationControllerTest {
                         .status(RecruitmentApplicationStatus.REQUEST)
                         .build());
 
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/recruitment/apply/1")
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/recruitments/requests/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

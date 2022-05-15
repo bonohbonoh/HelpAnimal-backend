@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "recruitments")
 public class Recruitment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,7 +58,7 @@ public class Recruitment extends BaseTimeEntity {
 
     /** 공고신청내역 */
     @OneToMany(mappedBy = "recruitment")
-    private List<RecruitmentApplication> recruitmentApplications;
+    private List<RecruitmentRequest> recruitmentRequests;
 
     public void updateRecruitmentName(String name) {
         this.name = name;

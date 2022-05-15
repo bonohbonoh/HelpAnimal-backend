@@ -1,7 +1,7 @@
 package com.jeonggolee.helpanimal.domain.recruitment.repository;
 
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentApplicationDetailDto;
-import com.jeonggolee.helpanimal.domain.recruitment.entity.RecruitmentApplication;
+import com.jeonggolee.helpanimal.domain.recruitment.entity.RecruitmentRequest;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,21 +14,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RecruitmentApplicationRepository extends JpaRepository<RecruitmentApplication, Long> {
+public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentRequest, Long> {
     @Query(
             "SELECT ra " +
-                    "FROM RecruitmentApplication ra " +
+                    "FROM RecruitmentRequest ra " +
                     "INNER JOIN ra.user u " +
                     "     ON ra.deletedAt IS NULL " +
                     "    AND u.deletedAt IS NULL " +
                     "WHERE ra.id = :raId " +
                     "AND   u.userId = :userId "
     )
-    List<RecruitmentApplication> findByHistory(@Param("raId") Long raId, @Param("userId") Long userId);
+    List<RecruitmentRequest> findByHistory(@Param("raId") Long raId, @Param("userId") Long userId);
 
-    Optional<RecruitmentApplication> findByIdAndUserAndDeletedAtIsNull(Long id, User user);
+    Optional<RecruitmentRequest> findByIdAndUserAndDeletedAtIsNull(Long id, User user);
 
-    Optional<RecruitmentApplication> findByIdAndDeletedAtIsNull(Long id);
+    Optional<RecruitmentRequest> findByIdAndDeletedAtIsNull(Long id);
 
     @Query(value =
             "SELECT new com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentApplicationDetailDto( " +
@@ -39,7 +39,7 @@ public interface RecruitmentApplicationRepository extends JpaRepository<Recruitm
                     "ra.comment, " +
                     "ra.status" +
                     ") " +
-                    "FROM RecruitmentApplication ra " +
+                    "FROM RecruitmentRequest ra " +
                     "INNER JOIN User u " +
                     "       ON ra.user.userId = u.userId " +
                     "       AND u.deletedAt IS NULL " +
@@ -50,7 +50,7 @@ public interface RecruitmentApplicationRepository extends JpaRepository<Recruitm
                     "AND   ra.deletedAt IS NULL ",
             countQuery =
                     "SELECT count(ra) " +
-                            "FROM RecruitmentApplication ra " +
+                            "FROM RecruitmentRequest ra " +
                             "INNER JOIN User u " +
                             "     ON ra.user.userId = u.userId " +
                             "     AND u.deletedAt IS NULL " +
@@ -70,7 +70,7 @@ public interface RecruitmentApplicationRepository extends JpaRepository<Recruitm
                     "ra.comment, " +
                     "ra.status" +
                     ") " +
-                    "FROM RecruitmentApplication ra " +
+                    "FROM RecruitmentRequest ra " +
                     "INNER JOIN User u " +
                     "       ON ra.user.userId = u.userId " +
                     "       AND u.deletedAt IS NULL " +
@@ -81,7 +81,7 @@ public interface RecruitmentApplicationRepository extends JpaRepository<Recruitm
                     "AND   ra.deletedAt IS NULL ",
             countQuery =
                     "SELECT count(ra) " +
-                            "FROM RecruitmentApplication ra " +
+                            "FROM RecruitmentRequest ra " +
                             "INNER JOIN User u " +
                             "     ON ra.user.userId = u.userId " +
                             "     AND u.deletedAt IS NULL " +
