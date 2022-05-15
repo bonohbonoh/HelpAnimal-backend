@@ -49,5 +49,12 @@ public class CommonExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(ResponseDto.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<?> illegalStateException(
+        IllegalStateException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ResponseDto.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+    }
 }
 
