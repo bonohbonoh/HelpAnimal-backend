@@ -3,12 +3,20 @@ package com.jeonggolee.helpanimal.domain.recruitment.entity;
 import com.jeonggolee.helpanimal.common.entity.BaseTimeEntity;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentApplicationStatus;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
@@ -39,5 +47,13 @@ public class RecruitmentRequest extends BaseTimeEntity {
 
     public void updateComment(String comment) {
         this.comment = comment;
+    }
+
+    public void addRecruitment(Recruitment recruitment) {
+        this.recruitment = recruitment;
+    }
+
+    public void addUser(User user) {
+        this.user = user;
     }
 }

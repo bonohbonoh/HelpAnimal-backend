@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -35,10 +36,13 @@ public class RecruitmentService {
     /**
      * 공고등록
      */
-    public Long registRecruitment(RecruitmentRegistDto dto) {
-        User author = validateUser(dto.getEmail());
+    @Transactional
+    public Long save(RecruitmentRegistDto dto) {
+        User user = validateUser(dto.getEmail());
         Animal animal = validateAnimal(dto.getAnimal());
-        return recruitmentRepository.save(dto.toEntity(author, animal)).getId();
+        Recruitment recruitment = dto.toEntity(animal);
+        user.addRecruitment(recruitment);
+        return recruitmentRepository.save(recruitment).getId();
     }
 
     /**
@@ -87,7 +91,9 @@ public class RecruitmentService {
      */
     public void deleteRecruitment(Long id) throws Exception {
         Recruitment recruitment = getRecruitment(id);
-        validateAuthor(recruitment.getUser());
+        User user = recruitment.getUser();
+        validateAuthor(user);
+        user.deleteRecruitment(recruitment);
         recruitment.delete();
         recruitmentRepository.save(recruitment);
     }

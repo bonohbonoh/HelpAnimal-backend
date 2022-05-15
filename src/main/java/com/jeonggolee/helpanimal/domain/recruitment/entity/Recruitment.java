@@ -4,10 +4,25 @@ import com.jeonggolee.helpanimal.common.entity.BaseTimeEntity;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentMethod;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentType;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
-import lombok.*;
-
-import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
@@ -16,48 +31,67 @@ import java.util.List;
 @Entity
 @Table(name = "recruitments")
 public class Recruitment extends BaseTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** 공고명 */
+    /**
+     * 공고명
+     */
     @Column(nullable = false, length = 30)
     private String name;
 
-    /** 공고 구분(일회성, 크루 충원) */
+    /**
+     * 공고 구분(일회성, 크루 충원)
+     */
     @Column
     @Enumerated(EnumType.STRING)
     private RecruitmentType recruitmentType;
 
-    /** 등록자 */
+    /**
+     * 등록자
+     */
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User user;
 
-    /** 내용 */
+    /**
+     * 내용
+     */
     @Column(nullable = false)
     private String content;
 
-    /** 봉사 구분 (개, 고양이 등등) */
+    /**
+     * 봉사 구분 (개, 고양이 등등)
+     */
     @OneToOne
     @JoinColumn(name = "animal_type")
     private Animal animal;
 
-    /** 총 참가 인원 */
+    /**
+     * 총 참가 인원
+     */
     @Column(nullable = false)
     private int participant;
 
-    /** 첨부 이미지 */
+    /**
+     * 첨부 이미지
+     */
     @Column(nullable = true, length = 500)
     private String imageUrl;
 
-    /** 채용 방식 */
+    /**
+     * 채용 방식
+     */
     @Column
     @Enumerated(EnumType.STRING)
     private RecruitmentMethod recruitmentMethod;
 
-    /** 공고신청내역 */
-    @OneToMany(mappedBy = "recruitment")
+    /**
+     * 공고신청내역
+     */
+    @OneToMany(mappedBy = "recruitment", cascade = CascadeType.ALL)
     private List<RecruitmentRequest> recruitmentRequests;
 
     public void updateRecruitmentName(String name) {
@@ -74,5 +108,24 @@ public class Recruitment extends BaseTimeEntity {
 
     public void updateImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void addUser(User user) {
+        this.user = user;
+    }
+
+
+    public void addRequest(RecruitmentRequest request) {
+        if (this.recruitmentRequests == null) {
+            this.recruitmentRequests = new ArrayList<>();
+        }
+        request.addRecruitment(this);
+        this.recruitmentRequests.add(request);
+    }
+
+    public void deleteRequest(RecruitmentRequest request) {
+        if (!this.recruitmentRequests.isEmpty() && this.recruitmentRequests.contains(request)) {
+            this.recruitmentRequests.remove(request);
+        }
     }
 }

@@ -5,18 +5,24 @@ import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentUpdat
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentDetailDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentListDto;
 import com.jeonggolee.helpanimal.domain.recruitment.service.RecruitmentService;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 public class RecruitmentController {
+
     private final RecruitmentService recruitmentService;
 
     /**
@@ -24,8 +30,8 @@ public class RecruitmentController {
      */
     @PostMapping("/api/v1/recruitment")
     public ResponseEntity<Long> registRecruitment(
-            @RequestBody @Valid RecruitmentRegistDto registDto) throws Exception {
-        return new ResponseEntity<Long>(recruitmentService.registRecruitment(registDto), HttpStatus.CREATED);
+        @RequestBody @Valid RecruitmentRegistDto registDto) throws Exception {
+        return new ResponseEntity<Long>(recruitmentService.save(registDto), HttpStatus.CREATED);
     }
 
     /**
@@ -33,9 +39,9 @@ public class RecruitmentController {
      */
     @GetMapping("/api/v1/recruitment")
     public ResponseEntity<Page<RecruitmentListDto>> getAllRecruitmentList(
-            Pageable pageable) throws Exception {
+        Pageable pageable) throws Exception {
         return new ResponseEntity<Page<RecruitmentListDto>>(
-                recruitmentService.getRecriutmentListWithPaging(pageable), HttpStatus.OK);
+            recruitmentService.getRecriutmentListWithPaging(pageable), HttpStatus.OK);
     }
 
     /**
@@ -43,9 +49,9 @@ public class RecruitmentController {
      */
     @PutMapping("/api/v1/recruitment/{id}")
     public ResponseEntity updateRecruitment(
-            @PathVariable("id") Long id,
-            @RequestBody @Valid RecruitmentUpdateDto updateDto) throws Exception {
-        recruitmentService.updateRecruitment(id,updateDto);
+        @PathVariable("id") Long id,
+        @RequestBody @Valid RecruitmentUpdateDto updateDto) throws Exception {
+        recruitmentService.updateRecruitment(id, updateDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -54,9 +60,9 @@ public class RecruitmentController {
      */
     @GetMapping("/api/v1/recruitment/{id}")
     public ResponseEntity<RecruitmentDetailDto> getRecruitmentDetail(
-            @PathVariable("id") Long id) throws Exception {
+        @PathVariable("id") Long id) throws Exception {
         return new ResponseEntity<RecruitmentDetailDto>(
-                recruitmentService.getRecruitmentDetail(id),HttpStatus.OK);
+            recruitmentService.getRecruitmentDetail(id), HttpStatus.OK);
     }
 
     /**
