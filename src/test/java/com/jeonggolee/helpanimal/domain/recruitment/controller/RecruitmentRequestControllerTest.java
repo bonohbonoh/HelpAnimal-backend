@@ -52,19 +52,19 @@ public class RecruitmentRequestControllerTest {
     @BeforeEach
     public void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(wac)
-                .addFilters(new CharacterEncodingFilter("UTF-8", true))  // 필터 추가
-                .alwaysDo(print())
-                .build();
+            .addFilters(new CharacterEncodingFilter("UTF-8", true))  // 필터 추가
+            .alwaysDo(print())
+            .build();
     }
 
     @Test
     @WithMockUser(username = "test1@naver.com", roles = {"USER"})
     void 참여신청_등록() throws Exception {
         RecruitmentApplicationRequestDto dto = RecruitmentApplicationRequestDto.builder()
-                .email("test1@test.com")
-                .comment("comment")
-                .recruitmentId(1L)
-                .build();
+            .email("test1@test.com")
+            .comment("comment")
+            .recruitmentId(1L)
+            .build();
 
         when(recruitmentRequestService.requestRecruitment(any())).thenReturn(1L);
 
@@ -73,55 +73,56 @@ public class RecruitmentRequestControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content))
-                .andExpect(status().isCreated());
+            .andExpect(status().isCreated());
     }
 
     @Test
     @WithMockUser(username = "test1@naver.com", roles = {"USER"})
     void 참여신청_삭제() throws Exception {
         doNothing().when(recruitmentRequestService).deleteRecruitmentApplication(anyLong());
-        mvc.perform(MockMvcRequestBuilders.delete("/api/v1/recruitments/requests/"+1L)
+        mvc.perform(MockMvcRequestBuilders.delete("/api/v1/recruitments/requests/" + 1L)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(username = "test1@naver.com", roles = {"USER"})
     void 참여신청내역_유저로_조회_페이징() throws Exception {
 
-        when(recruitmentRequestService.findRecruitmentApplicationByUser(any(),anyLong()))
-                .thenReturn(RecruitmentApplicationSearchDto.builder()
-                        .numberOfElements(0)
-                        .totalElements(10L)
-                        .data(new ArrayList<>())
-                        .build());
+        when(recruitmentRequestService.findRecruitmentApplicationByUser(any(), anyLong()))
+            .thenReturn(RecruitmentApplicationSearchDto.builder()
+                .numberOfElements(0)
+                .totalElements(10L)
+                .data(new ArrayList<>())
+                .build());
 
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/recruitments/requests/user/1?page=0&size=10")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.numberOfElements").value(0))
-                .andExpect(jsonPath("$.totalElements").value(10L));
+        mvc.perform(
+                MockMvcRequestBuilders.get("/api/v1/recruitments/requests/user/1?page=0&size=10")
+                    .accept(MediaType.APPLICATION_JSON)
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.numberOfElements").value(0))
+            .andExpect(jsonPath("$.data.totalElements").value(10L));
     }
 
     @Test
     @WithMockUser(username = "test1@naver.com", roles = {"USER"})
     void 참여신청내역_공고로_조회_페이징() throws Exception {
 
-        when(recruitmentRequestService.findRecruitmentApplicationByRecruitment(any(),anyLong()))
-                .thenReturn(RecruitmentApplicationSearchDto.builder()
-                        .numberOfElements(0)
-                        .totalElements(10L)
-                        .data(new ArrayList<>())
-                        .build());
+        when(recruitmentRequestService.findRecruitmentApplicationByRecruitment(any(), anyLong()))
+            .thenReturn(RecruitmentApplicationSearchDto.builder()
+                .numberOfElements(0)
+                .totalElements(10L)
+                .data(new ArrayList<>())
+                .build());
 
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/recruitments/1/requests?page=0&size=10")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.numberOfElements").value(0))
-                .andExpect(jsonPath("$.totalElements").value(10L));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.numberOfElements").value(0))
+            .andExpect(jsonPath("$.data.totalElements").value(10L));
 
     }
 
@@ -130,24 +131,24 @@ public class RecruitmentRequestControllerTest {
     void 공고_상세조회() throws Exception {
 
         when(recruitmentRequestService.findById(anyLong()))
-                .thenReturn(RecruitmentApplicationDetailDto.builder()
-                        .id(1L)
-                        .recruitmentId(1L)
-                        .recruitmentName("TEST 공고")
-                        .email("test1@test.com")
-                        .comment("신청합니다")
-                        .status(RecruitmentApplicationStatus.REQUEST)
-                        .build());
+            .thenReturn(RecruitmentApplicationDetailDto.builder()
+                .id(1L)
+                .recruitmentId(1L)
+                .recruitmentName("TEST 공고")
+                .email("test1@test.com")
+                .comment("신청합니다")
+                .status(RecruitmentApplicationStatus.REQUEST)
+                .build());
 
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/recruitments/requests/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.recruitmentId").value(1L))
-                .andExpect(jsonPath("$.recruitmentName").value("TEST 공고"))
-                .andExpect(jsonPath("$.email").value("test1@test.com"))
-                .andExpect(jsonPath("$.comment").value("신청합니다"))
-                .andExpect(jsonPath("$.status").value("REQUEST"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.id").value(1L))
+            .andExpect(jsonPath("$.data.recruitmentId").value(1L))
+            .andExpect(jsonPath("$.data.recruitmentName").value("TEST 공고"))
+            .andExpect(jsonPath("$.data.email").value("test1@test.com"))
+            .andExpect(jsonPath("$.data.comment").value("신청합니다"))
+            .andExpect(jsonPath("$.data.status").value("REQUEST"));
     }
 }
