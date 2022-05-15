@@ -1,6 +1,6 @@
 package com.jeonggolee.helpanimal.domain.crew.domain;
 
-import com.jeonggolee.helpanimal.common.eneity.BaseTimeEntity;
+import com.jeonggolee.helpanimal.common.entity.BaseTimeEntity;
 import com.jeonggolee.helpanimal.domain.crew.enums.CrewMemberRole;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
 import lombok.*;
