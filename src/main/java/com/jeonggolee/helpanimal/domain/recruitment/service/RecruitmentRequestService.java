@@ -43,7 +43,7 @@ public class RecruitmentRequestService {
             .build();
         recruitment.addRequest(request);
         requestUser.addRecruitmentRequest(request);
-        return recruitmentRequestRepository.save(request).getId();
+        return recruitmentRepository.save(recruitment).getId();
     }
 
     @Transactional
