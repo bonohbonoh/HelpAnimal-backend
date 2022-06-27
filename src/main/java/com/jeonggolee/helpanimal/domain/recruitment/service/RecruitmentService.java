@@ -21,22 +21,28 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class RecruitmentService {
+
     private final RecruitmentRepository recruitmentRepository;
     private final UserService userService;
     private final UserRepository userRepository;
     private final AnimalRepository animalRepository;
+
     /**
      * 공고등록
      */
-    public Long registRecruitment(RecruitmentRegistDto dto) {
-        User author = validateUser(dto.getEmail());
+    @Transactional
+    public Long save(RecruitmentRegistDto dto) {
+        User user = validateUser(dto.getEmail());
         Animal animal = validateAnimal(dto.getAnimal());
-        return recruitmentRepository.save(dto.toEntity(author,animal)).getId();
+        Recruitment recruitment = dto.toEntity(animal);
+        user.addRecruitment(recruitment);
+        return recruitmentRepository.save(recruitment).getId();
     }
 
     /**
@@ -44,17 +50,17 @@ public class RecruitmentService {
      */
     public Page<RecruitmentListDto> getRecriutmentListWithPaging(Pageable pageable) {
         return recruitmentRepository.findAllByDeletedAtIsNull(pageable)
-                .map(recruitment -> new RecruitmentListDto().builder()
-                        .id(recruitment.getId())
-                        .name(recruitment.getName())
-                        .recruitmentType(recruitment.getRecruitmentType())
-                        .author(recruitment.getUser().getNickname())
-                        .content(recruitment.getContent())
-                        .animalType(recruitment.getAnimal().getName())
-                        .participant(recruitment.getParticipant())
-                        .imageUrl(recruitment.getImageUrl())
-                        .recruitmentMethod(recruitment.getRecruitmentMethod())
-                        .build());
+            .map(recruitment -> new RecruitmentListDto().builder()
+                .id(recruitment.getId())
+                .name(recruitment.getName())
+                .recruitmentType(recruitment.getRecruitmentType())
+                .author(recruitment.getUser().getNickname())
+                .content(recruitment.getContent())
+                .animalType(recruitment.getAnimal().getName())
+                .participant(recruitment.getParticipant())
+                .imageUrl(recruitment.getImageUrl())
+                .recruitmentMethod(recruitment.getRecruitmentMethod())
+                .build());
     }
 
     /**
@@ -85,27 +91,29 @@ public class RecruitmentService {
      */
     public void deleteRecruitment(Long id) throws Exception {
         Recruitment recruitment = getRecruitment(id);
-        validateAuthor(recruitment.getUser());
+        User user = recruitment.getUser();
+        validateAuthor(user);
+        user.deleteRecruitment(recruitment);
         recruitment.delete();
         recruitmentRepository.save(recruitment);
     }
 
     private User validateUser(String email) {
         return userRepository.findByEmailAndDeletedAtNull(email).orElseThrow(
-                ()-> new UserNotFoundException("해당 회원이 존재하지 않습니다."));
+            () -> new UserNotFoundException("해당 회원이 존재하지 않습니다."));
     }
 
     private Animal validateAnimal(String animal) {
         return animalRepository.findByNameAndDeletedAtNull(animal).orElseThrow(
-                ()-> new AnimalNotFoundException("해당 동물은 존재하지 않습니다."));
+            () -> new AnimalNotFoundException("해당 동물은 존재하지 않습니다."));
     }
 
     private Recruitment getRecruitment(Long id) {
         return recruitmentRepository.findById(id).orElseThrow(
-                ()-> new RecruitmentNotFoundException("해당 공고를 찾을 수 없습니다."));
+            () -> new RecruitmentNotFoundException("해당 공고를 찾을 수 없습니다."));
     }
 
-    private void validateAuthor(User user) throws Exception {
+    private void validateAuthor(User user) {
         UserInfoReadDto userInfoReadDto = userService.getUserInfo();
         if (userInfoReadDto.getUserId() != user.getUserId()) {
             throw new RecruitmentNotOwnerException("해당 공고의 작성자가 아닙니다.");

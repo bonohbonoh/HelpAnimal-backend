@@ -1,6 +1,6 @@
 package com.jeonggolee.helpanimal.domain.recruitment.entity;
 
-import com.jeonggolee.helpanimal.common.eneity.BaseTimeEntity;
+import com.jeonggolee.helpanimal.common.entity.BaseTimeEntity;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
 import lombok.*;
 
@@ -11,6 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "animals")
 public class Animal extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
