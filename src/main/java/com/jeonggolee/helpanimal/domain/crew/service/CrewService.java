@@ -2,8 +2,8 @@ package com.jeonggolee.helpanimal.domain.crew.service;
 
 import com.jeonggolee.helpanimal.common.exception.CrewNameDuplicateException;
 import com.jeonggolee.helpanimal.common.exception.CrewNotFoundException;
-import com.jeonggolee.helpanimal.domain.crew.domain.Crew;
-import com.jeonggolee.helpanimal.domain.crew.domain.CrewMember;
+import com.jeonggolee.helpanimal.domain.crew.domain.Crews;
+import com.jeonggolee.helpanimal.domain.crew.domain.CrewMembers;
 import com.jeonggolee.helpanimal.domain.crew.dto.CreateCrewDto;
 import com.jeonggolee.helpanimal.domain.crew.dto.ReadCrewDetailDto;
 import com.jeonggolee.helpanimal.domain.crew.dto.ReadCrewDto;
@@ -39,13 +39,13 @@ public class CrewService {
         User user = userRepository.findOne(uss.searchWithEmailEqual(masterEmail))
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자 입니다."));
 
-        CrewMember crewMaster = createCrewMaster(user);
+        CrewMembers crewMaster = createCrewMaster(user);
         crewMemberRepository.save(crewMaster);
 
-        Crew crew = createCrewDto.toEntity();
-        crew.addCrewMember(crewMaster);
+        Crews crews = createCrewDto.toEntity();
+        crews.addCrewMember(crewMaster);
 
-        return crewRepository.save(crew).getId();
+        return crewRepository.save(crews).getId();
     }
 
     //크루명 중복처리
@@ -56,8 +56,8 @@ public class CrewService {
     }
 
     //크루마스터 생성
-    private CrewMember createCrewMaster(User user){
-        return CrewMember.builder()
+    private CrewMembers createCrewMaster(User user){
+        return CrewMembers.builder()
                 .user(user)
                 .role(CrewMemberRole.MASTER)
                 .build();
@@ -81,32 +81,32 @@ public class CrewService {
 
     //크루 아이디로 상세조회
     public ReadCrewDetailDto readCrewDetail(Long id){
-        Crew crew = crewRepository.findOne(cs.searchWithId(id))
+        Crews crews = crewRepository.findOne(cs.searchWithId(id))
                 .orElseThrow(() -> new CrewNotFoundException("존재하지 않는 크루 입니다."));
 
-        return new ReadCrewDetailDto(crew);
+        return new ReadCrewDetailDto(crews);
     }
 
     //크루 수정
     public Long updateCrew(UpdateCrewDto updateCrewDto){
         validateDuplicateCrewName(updateCrewDto.getName());
 
-        Crew crew = crewRepository.findOne(cs.searchWithId(updateCrewDto.getId()))
+        Crews crews = crewRepository.findOne(cs.searchWithId(updateCrewDto.getId()))
                 .orElseThrow(() -> new CrewNotFoundException("존재하지 않는 크루 입니다."));
 
         if(updateCrewDto.getName() != null)
-            crew.updateName(updateCrewDto.getName());
+            crews.updateName(updateCrewDto.getName());
 
-        return crewRepository.save(crew).getId();
+        return crewRepository.save(crews).getId();
     }
 
     public void deleteCrew(Long id){
-        Crew crew = crewRepository.findOne(cs.searchWithId(id))
+        Crews crews = crewRepository.findOne(cs.searchWithId(id))
                 .orElseThrow(() -> new CrewNotFoundException("존재하지 않는 크루 입니다."));
 
-        crew.delete();
+        crews.delete();
 
-        crewRepository.save(crew);
+        crewRepository.save(crews);
     }
 
 }

@@ -12,13 +12,14 @@ import java.util.ArrayList;
 import static org.assertj.core.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CrewTest {
-    private Crew crew;
-    private CrewMember crewMember;
+class CrewsMemberTest {
+    private CrewMembers crewMembers;
+    private User user;
+    private Crews crews;
 
     @BeforeAll
     void beforeAll(){
-        User user = User.builder()
+        user = User.builder()
                 .email("테스트이메일")
                 .password("테스트비밀번호")
                 .name("테스트이름")
@@ -27,50 +28,47 @@ class CrewTest {
                 .role(Role.USER)
                 .build();
 
-
-        crewMember = CrewMember.builder()
+        crews = Crews.builder()
                 .id(0L)
-                .user(user)
-//                .crew(crew)
+                .name("테스트크루")
+                .crewMembersList(new ArrayList<>())
+                .build();
+
+        crewMembers = CrewMembers.builder()
+                .id(0L)
+                .user(null)
+                .crews(null)
                 .role(CrewMemberRole.MASTER)
                 .build();
 
-        crew = Crew.builder()
-                .id(0L)
-                .name("테스트크루")
-                .crewMemberList(new ArrayList<>())
-                .build();
 
     }
 
     @Test
-    void updateNameTest(){
-        crew.updateName("변경된테스트이름");
+    void updateCrewMemberRoleTest() {
+        crewMembers.updateCrewMemberRole(CrewMemberRole.MEMBER);
 
-        assertThat(crew.getName()).isEqualTo("변경된테스트이름");
+        assertThat(crewMembers.getRole()).isEqualTo(CrewMemberRole.MEMBER);
     }
 
     @Test
-    void addCrewMemberTest(){
-        crew.addCrewMember(crewMember);
+    void registerCrewTest() {
+        crewMembers.registerCrew(crews);
 
-        assertThat(crew.getCrewMemberList().get(0).getId()).isEqualTo(0L);
+        assertThat(crewMembers.getCrews()).isEqualTo(crews);
     }
 
     @Test
-    void removeCrewMemberTest(){
-        crew.removeCrewMember(crewMember);
+    void registerUserTest() {
+        crewMembers.registerUser(user);
 
-        assertThat(crew.getCrewMemberList().size()).isEqualTo(0);
+        assertThat(crewMembers.getUser()).isEqualTo(user);
     }
 
     @Test
-    void deleteTest(){
-        crew.delete();
+    void deleteTest() {
+        crewMembers.delete();
 
-        assertThat(crew.getDeletedAt()).isNotNull();
-
+        assertThat(crewMembers.getDeletedAt()).isNotNull();
     }
-
-
 }

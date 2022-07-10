@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.*;
 @AutoConfigureMockMvc
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CrewControllerTest {
+class CrewsControllerTest {
     @Autowired
     MockMvc crewMvc;
     @Autowired
