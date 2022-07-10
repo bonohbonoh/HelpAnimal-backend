@@ -1,7 +1,7 @@
 package com.jeonggolee.helpanimal.domain.user.entity;
 
 import com.jeonggolee.helpanimal.common.eneity.BaseTimeEntity;
-import com.jeonggolee.helpanimal.domain.crew.domain.CrewMember;
+import com.jeonggolee.helpanimal.domain.crew.domain.CrewMembers;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import lombok.*;
 
@@ -44,7 +44,7 @@ public class User extends BaseTimeEntity {
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<CrewMember> crewMembers;
+    private List<CrewMembers> crewMembers;
 
     public void updateRole(Role role) {
         this.role = role;

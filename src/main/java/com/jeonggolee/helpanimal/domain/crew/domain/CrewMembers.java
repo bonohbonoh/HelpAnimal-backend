@@ -16,7 +16,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "crew_member")
-public class CrewMember extends BaseTimeEntity{
+public class CrewMembers extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "crew_member_idx_generator")
@@ -24,7 +24,7 @@ public class CrewMember extends BaseTimeEntity{
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "crew_id")
-    private Crew crew;
+    private Crews crews;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
@@ -38,8 +38,8 @@ public class CrewMember extends BaseTimeEntity{
         this.role = role;
     }
 
-    public void registerCrew(Crew crew){
-        this.crew = crew;
+    public void registerCrew(Crews crews){
+        this.crews = crews;
     }
 
     public void registerUser(User user){
@@ -47,7 +47,7 @@ public class CrewMember extends BaseTimeEntity{
     }
 
     private void removeCrew(){
-        this.crew = null;
+        this.crews = null;
     }
 
     private void removeUser(){

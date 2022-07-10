@@ -1,6 +1,6 @@
 package com.jeonggolee.helpanimal.domain.crew.query;
 
-import com.jeonggolee.helpanimal.domain.crew.domain.Crew;
+import com.jeonggolee.helpanimal.domain.crew.domain.Crews;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ import java.util.List;
 public class CrewSpecification {
 
     //크루 ID로 조회
-    public Specification<Crew> searchWithId(Long id){
+    public Specification<Crews> searchWithId(Long id){
         return (root, query, builder) -> {
             List<Predicate> predicateList = new ArrayList<>();
 
@@ -26,7 +26,7 @@ public class CrewSpecification {
     }
 
     //크루 이름으로 조회
-    public Specification<Crew> searchWithName(String name){
+    public Specification<Crews> searchWithName(String name){
         return (root, query, builder) -> {
             List<Predicate> predicateList = new ArrayList<>();
 
@@ -38,17 +38,17 @@ public class CrewSpecification {
     }
 
     //삭제되지 않은 조건 쿼리
-    private Predicate withNotDeleted(Root<Crew> root, CriteriaBuilder builder){
+    private Predicate withNotDeleted(Root<Crews> root, CriteriaBuilder builder){
         return builder.isNull(root.get("deletedAt"));
     }
 
     //크루아이디 조건 쿼리
-    private Predicate withId(Long id, Root<Crew> root, CriteriaBuilder builder){
+    private Predicate withId(Long id, Root<Crews> root, CriteriaBuilder builder){
         return builder.equal(root.get("id"), id);
     }
 
     //크루이름 조건 쿼리
-    private Predicate withName(String name, Root<Crew> root, CriteriaBuilder builder){
+    private Predicate withName(String name, Root<Crews> root, CriteriaBuilder builder){
         return builder.like(root.get("name"), "%" + name + "%");
     }
 }

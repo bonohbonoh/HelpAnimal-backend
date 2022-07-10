@@ -1,6 +1,6 @@
 package com.jeonggolee.helpanimal.domain.user.dto;
 
-import com.jeonggolee.helpanimal.domain.crew.domain.CrewMember;
+import com.jeonggolee.helpanimal.domain.crew.domain.CrewMembers;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import lombok.AllArgsConstructor;
@@ -31,7 +31,7 @@ public class UserInfoReadDto {
     @NotEmpty
     private Role role;
 
-    private List<CrewMember> crewMemberList;
+    private List<CrewMembers> crewMembersList;
 
     public UserInfoReadDto(User user) {
         this.userId = user.getUserId();
@@ -40,6 +40,6 @@ public class UserInfoReadDto {
         this.nickname = user.getNickname();
         this.profileImage = user.getProfileImage();
         this.role = user.getRole();
-        this.crewMemberList = user.getCrewMembers();
+        this.crewMembersList = user.getCrewMembers();
     }
 }
