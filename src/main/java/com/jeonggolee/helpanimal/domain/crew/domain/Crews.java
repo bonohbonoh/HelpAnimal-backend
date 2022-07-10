@@ -1,6 +1,6 @@
 package com.jeonggolee.helpanimal.domain.crew.domain;
 
-import com.jeonggolee.helpanimal.common.eneity.BaseTimeEntity;
+import com.jeonggolee.helpanimal.common.entity.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;

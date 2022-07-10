@@ -4,6 +4,7 @@ import com.jeonggolee.helpanimal.common.exception.AnimalNotFoundException;
 import com.jeonggolee.helpanimal.common.exception.RecruitmentApplicationNotFoundException;
 import com.jeonggolee.helpanimal.common.exception.RecruitmentNotFoundException;
 import com.jeonggolee.helpanimal.common.exception.UserNotFoundException;
+import com.jeonggolee.helpanimal.common.response.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,34 +13,48 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class CommonExceptionHandler {
+
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> userNotFoundException(UserNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> userNotFoundException(UserNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ResponseDto.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> methodArgumentNotValidExcepton(MethodArgumentNotValidException e) {
-        String response = e.getBindingResult()
-                .getAllErrors()
-                .get(0)
-                .getDefaultMessage();
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> methodArgumentNotValidExcepton(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult()
+            .getAllErrors()
+            .get(0)
+            .getDefaultMessage();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ResponseDto.fail(HttpStatus.BAD_REQUEST.value(), message));
     }
 
     @ExceptionHandler(AnimalNotFoundException.class)
-    public ResponseEntity<String> animalNotFoundException(AnimalNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> animalNotFoundException(AnimalNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ResponseDto.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
 
     @ExceptionHandler(RecruitmentNotFoundException.class)
-    public ResponseEntity<String> recruitmentNotFoundException(RecruitmentNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> recruitmentNotFoundException(RecruitmentNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ResponseDto.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
 
     @ExceptionHandler(RecruitmentApplicationNotFoundException.class)
-    public ResponseEntity<ExceptionStatus> recruitmentApplicationNotFoundException(RecruitmentApplicationNotFoundException e) {
-        ExceptionStatus response = new ExceptionStatus(e.getMessage(), HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<ExceptionStatus>(response, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> recruitmentApplicationNotFoundException(
+        RecruitmentApplicationNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ResponseDto.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<?> illegalStateException(
+        IllegalStateException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ResponseDto.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
 }
 

@@ -1,12 +1,14 @@
 package com.jeonggolee.helpanimal.domain.user.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jeonggolee.helpanimal.common.exception.UserNotFoundException;
 import com.jeonggolee.helpanimal.common.jwt.JwtTokenProvider;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
-import com.jeonggolee.helpanimal.domain.user.exception.ExceptionStatus;
 import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
@@ -27,9 +29,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.filter.CharacterEncodingFilter;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
 @Transactional
@@ -237,8 +236,5 @@ public class UserControllerFailTest {
         User user = findUser();
         assertThat(user.getUrl()).isNotNull();
         assertThat(user.getRole()).isEqualTo(Role.GUEST);
-        ExceptionStatus e = objectMapper.readValue(result.getResponse().getContentAsString(), ExceptionStatus.class);
-        assertThat(e.getStatus()).isEqualTo(400);
-
     }
 }

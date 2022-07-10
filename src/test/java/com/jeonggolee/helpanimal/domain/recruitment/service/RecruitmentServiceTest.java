@@ -1,5 +1,7 @@
 package com.jeonggolee.helpanimal.domain.recruitment.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentRegistDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentUpdateDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentDetailDto;
@@ -13,6 +15,8 @@ import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentReposi
 import com.jeonggolee.helpanimal.domain.user.entity.User;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
+import java.util.Optional;
+import javax.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +27,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.transaction.Transactional;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest
 @Transactional
 @ActiveProfiles("local")
 public class RecruitmentServiceTest {
+
     @Autowired
     private RecruitmentService recruitmentService;
 
@@ -55,21 +55,21 @@ public class RecruitmentServiceTest {
 
     private User initUser() {
         User user = User.builder()
-                .name("test")
-                .email(EMAIL)
-                .password("pass")
-                .nickname("닉네임")
-                .profileImage("image")
-                .role(Role.GUEST)
-                .build();
+            .name("test")
+            .email(EMAIL)
+            .password("pass")
+            .nickname("닉네임")
+            .profileImage("image")
+            .role(Role.GUEST)
+            .build();
         return userRepository.save(user);
     }
 
     private void initAnimal(User user) {
         animalRepository.save(Animal.builder()
-                .name(ANIMAL)
-                .user(user)
-                .build()
+            .name(ANIMAL)
+            .user(user)
+            .build()
         );
     }
 
@@ -81,17 +81,17 @@ public class RecruitmentServiceTest {
         initAnimal(user);
 
         RecruitmentRegistDto dto = RecruitmentRegistDto.builder()
-                .name(NAME)
-                .email(EMAIL)
-                .content(CONTENT)
-                .animal(ANIMAL)
-                .participant(PARTICIPANT)
-                .recruitmentMethod(RECRUITMENT_METHOD)
-                .recruitmentType(RECRUITMENT_TYPE)
-                .build();
+            .name(NAME)
+            .email(EMAIL)
+            .content(CONTENT)
+            .animal(ANIMAL)
+            .participant(PARTICIPANT)
+            .recruitmentMethod(RECRUITMENT_METHOD)
+            .recruitmentType(RECRUITMENT_TYPE)
+            .build();
 
         //when
-        recruitmentService.registRecruitment(dto);
+        recruitmentService.save(dto);
 
         //then
         Optional<Recruitment> recruitment = recruitmentRepository.findByName(NAME);
@@ -104,20 +104,20 @@ public class RecruitmentServiceTest {
         //given
         User user = initUser();
         initAnimal(user);
-        Pageable pageable = PageRequest.of(0,10);
+        Pageable pageable = PageRequest.of(0, 10);
 
         for (int i = 0; i < 12; i++) {
             RecruitmentRegistDto dto = RecruitmentRegistDto.builder()
-                    .name(NAME + i)
-                    .email(EMAIL)
-                    .content(CONTENT)
-                    .animal(ANIMAL)
-                    .participant(PARTICIPANT)
-                    .recruitmentType(RECRUITMENT_TYPE)
-                    .recruitmentMethod(RECRUITMENT_METHOD)
-                    .build();
+                .name(NAME + i)
+                .email(EMAIL)
+                .content(CONTENT)
+                .animal(ANIMAL)
+                .participant(PARTICIPANT)
+                .recruitmentType(RECRUITMENT_TYPE)
+                .recruitmentMethod(RECRUITMENT_METHOD)
+                .build();
 
-            recruitmentService.registRecruitment(dto);
+            recruitmentService.save(dto);
 
         }
         //when
@@ -134,16 +134,16 @@ public class RecruitmentServiceTest {
         initAnimal(user);
 
         RecruitmentRegistDto dto = RecruitmentRegistDto.builder()
-                .name(NAME)
-                .email(EMAIL)
-                .content(CONTENT)
-                .animal(ANIMAL)
-                .participant(PARTICIPANT)
-                .recruitmentMethod(RECRUITMENT_METHOD)
-                .recruitmentType(RECRUITMENT_TYPE)
-                .build();
+            .name(NAME)
+            .email(EMAIL)
+            .content(CONTENT)
+            .animal(ANIMAL)
+            .participant(PARTICIPANT)
+            .recruitmentMethod(RECRUITMENT_METHOD)
+            .recruitmentType(RECRUITMENT_TYPE)
+            .build();
 
-        Long id = recruitmentService.registRecruitment(dto);
+        Long id = recruitmentService.save(dto);
 
         //when
         RecruitmentDetailDto detailDto = recruitmentService.getRecruitmentDetail(id);
@@ -161,33 +161,32 @@ public class RecruitmentServiceTest {
     @Test
     @DisplayName("공고 수정 테스트")
     @WithMockUser(username = "test1@naver.com", roles = {"USER"})
-    public void 공고수정() throws Exception{
+    public void 공고수정() throws Exception {
         //given
         User user = initUser();
         initAnimal(user);
 
         RecruitmentRegistDto dto = RecruitmentRegistDto.builder()
-                .name(NAME)
-                .email(EMAIL)
-                .content(CONTENT)
-                .animal(ANIMAL)
-                .participant(PARTICIPANT)
-                .recruitmentMethod(RECRUITMENT_METHOD)
-                .recruitmentType(RECRUITMENT_TYPE)
-                .build();
+            .name(NAME)
+            .email(EMAIL)
+            .content(CONTENT)
+            .animal(ANIMAL)
+            .participant(PARTICIPANT)
+            .recruitmentMethod(RECRUITMENT_METHOD)
+            .recruitmentType(RECRUITMENT_TYPE)
+            .build();
 
-        Long id = recruitmentService.registRecruitment(dto);
+        Long id = recruitmentService.save(dto);
 
         //when
         RecruitmentUpdateDto updateDto = RecruitmentUpdateDto.builder()
-                .name("UPDATE_NAME")
-                .content("UPDATE_CONTENT")
-                .participant(1)
-                .imageUrl("UPDATE_IMAGE")
-                .build();
+            .name("UPDATE_NAME")
+            .content("UPDATE_CONTENT")
+            .participant(1)
+            .imageUrl("UPDATE_IMAGE")
+            .build();
 
-
-        recruitmentService.updateRecruitment(id,updateDto);
+        recruitmentService.updateRecruitment(id, updateDto);
         RecruitmentDetailDto detailDto = recruitmentService.getRecruitmentDetail(id);
 
         //then
@@ -206,16 +205,16 @@ public class RecruitmentServiceTest {
         initAnimal(user);
 
         RecruitmentRegistDto dto = RecruitmentRegistDto.builder()
-                .name(NAME)
-                .email(EMAIL)
-                .content(CONTENT)
-                .animal(ANIMAL)
-                .participant(PARTICIPANT)
-                .recruitmentMethod(RECRUITMENT_METHOD)
-                .recruitmentType(RECRUITMENT_TYPE)
-                .build();
+            .name(NAME)
+            .email(EMAIL)
+            .content(CONTENT)
+            .animal(ANIMAL)
+            .participant(PARTICIPANT)
+            .recruitmentMethod(RECRUITMENT_METHOD)
+            .recruitmentType(RECRUITMENT_TYPE)
+            .build();
 
-        Long id = recruitmentService.registRecruitment(dto);
+        Long id = recruitmentService.save(dto);
 
         //when
         recruitmentService.deleteRecruitment(id);
