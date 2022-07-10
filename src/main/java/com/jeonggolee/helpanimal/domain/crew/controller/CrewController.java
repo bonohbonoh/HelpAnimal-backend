@@ -20,37 +20,27 @@ public class CrewController {
     private final CrewService crewService;
 
     @PostMapping("")
-    public ResponseEntity<Long> createCrew(@RequestBody CreateCrewDto createCrewDto) {
+    public ResponseEntity<?> createCrew(@RequestBody CreateCrewDto createCrewDto) {
         String requesterEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Long createdCrewId = crewService.createCrew(createCrewDto, requesterEmail);
-
-        return new ResponseEntity<>(createdCrewId, HttpStatus.OK);
+        return new ResponseEntity<>(crewService.createCrew(createCrewDto, requesterEmail), HttpStatus.OK);
     }
 
     @GetMapping("")
-    public ResponseEntity<List<ReadCrewDto>> readCrewList(@RequestParam int page, @RequestParam int size, @RequestParam(required = false) String name) {
-        List<ReadCrewDto> result;
-        if (name == null) {
-            result = crewService.readCrewList(page, size);
-        }
-        else {
-            result = crewService.readCrewListByName(page, size, name);
-        }
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public ResponseEntity<?> readCrewList(@RequestParam int page, @RequestParam int size, @RequestParam(required = false) String name) {
+        return (name == null)
+                ? new ResponseEntity<>(crewService.readCrewList(page, size), HttpStatus.OK)
+                : new ResponseEntity<>(crewService.readCrewListByName(page, size, name), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReadCrewDetailDto> readCrewDetail(@PathVariable Long id) {
-        ReadCrewDetailDto result;
-        result = crewService.readCrewDetail(id);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public ResponseEntity<?> readCrewDetail(@PathVariable Long id) {
+        return new ResponseEntity<>(crewService.readCrewDetail(id), HttpStatus.OK);
     }
 
     @PutMapping("")
-    public ResponseEntity<Long> updateCrew(@RequestBody UpdateCrewDto updateCrewDto){
-        Long updatedCrewId = crewService.updateCrew(updateCrewDto);
-        return new ResponseEntity<>(updatedCrewId, HttpStatus.OK);
+    public ResponseEntity<?> updateCrew(@RequestBody UpdateCrewDto updateCrewDto){
+        return new ResponseEntity<>(crewService.updateCrew(updateCrewDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
