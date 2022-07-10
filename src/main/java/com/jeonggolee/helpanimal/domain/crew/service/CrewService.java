@@ -67,7 +67,7 @@ public class CrewService {
     public List<ReadCrewDto> readCrewList(int page, int size){
         PageRequest pageRequest = PageRequest.of(page, size);
         return crewRepository.findAll(pageRequest).stream()
-                .map(ReadCrewDto::new)
+                .map(ReadCrewDto::from)
                 .collect(Collectors.toList());
     }
 
@@ -75,7 +75,7 @@ public class CrewService {
     public List<ReadCrewDto> readCrewListByName(int page, int size, String name){
         PageRequest pageRequest = PageRequest.of(page, size);
         return crewRepository.findAll(cs.searchWithName(name), pageRequest).stream()
-                .map(ReadCrewDto::new)
+                .map(ReadCrewDto::from)
                 .collect(Collectors.toList());
     }
 
@@ -84,7 +84,7 @@ public class CrewService {
         Crew crew = crewRepository.findOne(cs.searchWithId(id))
                 .orElseThrow(() -> new CrewNotFoundException("존재하지 않는 크루 입니다."));
 
-        return new ReadCrewDetailDto(crew);
+        return ReadCrewDetailDto.from(crew);
     }
 
     //크루 수정
