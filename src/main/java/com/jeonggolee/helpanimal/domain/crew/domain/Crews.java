@@ -14,8 +14,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "crew")
-public class Crew extends BaseTimeEntity {
+@Entity(name = "crews")
+public class Crews extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "crew_idx_generator")
     private Long id;
@@ -25,7 +25,7 @@ public class Crew extends BaseTimeEntity {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "crew_id")
-    private List<CrewMember> crewMemberList;
+    private List<CrewMembers> crewMembersList;
 
     //TODO: 공고 테이블이 추가되면 OneToMany 추가
 
@@ -37,20 +37,20 @@ public class Crew extends BaseTimeEntity {
         this.name = name;
     }
 
-    public void addCrewMember(CrewMember newCrewMember){
-        crewMemberList.add(newCrewMember);
-        newCrewMember.registerCrew(this);
+    public void addCrewMember(CrewMembers newCrewMembers){
+        crewMembersList.add(newCrewMembers);
+        newCrewMembers.registerCrew(this);
     }
 
-    public void removeCrewMember(CrewMember deleteCrewMember){
-        crewMemberList.remove(deleteCrewMember);
-        deleteCrewMember.delete();
+    public void removeCrewMember(CrewMembers deleteCrewMembers){
+        crewMembersList.remove(deleteCrewMembers);
+        deleteCrewMembers.delete();
     }
 
     @Override
     public void delete(){
         super.delete();
-        this.crewMemberList.forEach(CrewMember::delete);
+        this.crewMembersList.forEach(CrewMembers::delete);
     }
 
 }

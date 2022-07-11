@@ -1,7 +1,6 @@
 package com.jeonggolee.helpanimal.domain.crew.query;
 
-import com.jeonggolee.helpanimal.domain.crew.domain.Crew;
-import com.jeonggolee.helpanimal.domain.crew.domain.CrewMember;
+import com.jeonggolee.helpanimal.domain.crew.domain.CrewMembers;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,7 @@ import java.util.List;
 public class CrewMemberSpecification {
 
     //크루맴버 ID로 조회
-    public Specification<CrewMember> searchWithId(Long id){
+    public Specification<CrewMembers> searchWithId(Long id){
         return (root, query, builder) -> {
             List<Predicate> predicateList = new ArrayList<>();
 
@@ -27,12 +26,12 @@ public class CrewMemberSpecification {
     }
 
     //삭제되지 않은 조건 쿼리
-    private Predicate withNotDeleted(Root<CrewMember> root, CriteriaBuilder builder){
+    private Predicate withNotDeleted(Root<CrewMembers> root, CriteriaBuilder builder){
         return builder.isNull(root.get("deletedAt"));
     }
 
     //크루맴버아이디 조건 쿼리
-    private Predicate withId(Long id, Root<CrewMember> root, CriteriaBuilder builder){
+    private Predicate withId(Long id, Root<CrewMembers> root, CriteriaBuilder builder){
         return builder.equal(root.get("id"), id);
     }
 }
