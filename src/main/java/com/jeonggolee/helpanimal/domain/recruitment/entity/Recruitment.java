@@ -1,6 +1,7 @@
 package com.jeonggolee.helpanimal.domain.recruitment.entity;
 
 import com.jeonggolee.helpanimal.common.entity.BaseTimeEntity;
+import com.jeonggolee.helpanimal.domain.recruitment.enums.Animal;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentMethod;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentType;
 import com.jeonggolee.helpanimal.domain.user.entity.User;

@@ -3,7 +3,7 @@ package com.jeonggolee.helpanimal.domain.recruitment.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentRegistDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentUpdateDto;
-import com.jeonggolee.helpanimal.domain.recruitment.entity.Animal;
+import com.jeonggolee.helpanimal.domain.recruitment.enums.Animal;
 import com.jeonggolee.helpanimal.domain.recruitment.entity.Recruitment;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentMethod;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentType;
