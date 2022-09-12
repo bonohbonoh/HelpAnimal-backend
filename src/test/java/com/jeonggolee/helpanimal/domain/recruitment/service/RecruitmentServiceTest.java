@@ -6,11 +6,9 @@ import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentRegis
 import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentUpdateDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentDetailDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentListDto;
-import com.jeonggolee.helpanimal.domain.recruitment.entity.Animal;
 import com.jeonggolee.helpanimal.domain.recruitment.entity.Recruitment;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentMethod;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentType;
-import com.jeonggolee.helpanimal.domain.recruitment.repository.AnimalRepository;
 import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRepository;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
@@ -41,10 +39,6 @@ public class RecruitmentServiceTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private AnimalRepository animalRepository;
-
-
     private final String NAME = "테스트공고";
     private final String EMAIL = "test1@naver.com";
     private final String CONTENT = "본문";
@@ -65,20 +59,11 @@ public class RecruitmentServiceTest {
         return userRepository.save(user);
     }
 
-    private void initAnimal(User user) {
-        animalRepository.save(Animal.builder()
-            .name(ANIMAL)
-            .user(user)
-            .build()
-        );
-    }
-
     @Test
     @DisplayName("공고등록 테스트")
     public void 공고등록() {
         //given
         User user = initUser();
-        initAnimal(user);
 
         RecruitmentRegistDto dto = RecruitmentRegistDto.builder()
             .name(NAME)
@@ -103,7 +88,6 @@ public class RecruitmentServiceTest {
     public void 공고전체조회_페이징() {
         //given
         User user = initUser();
-        initAnimal(user);
         Pageable pageable = PageRequest.of(0, 10);
 
         for (int i = 0; i < 12; i++) {
@@ -131,7 +115,6 @@ public class RecruitmentServiceTest {
     public void 공고_상세조회() {
         //given
         User user = initUser();
-        initAnimal(user);
 
         RecruitmentRegistDto dto = RecruitmentRegistDto.builder()
             .name(NAME)
@@ -164,7 +147,6 @@ public class RecruitmentServiceTest {
     public void 공고수정() throws Exception {
         //given
         User user = initUser();
-        initAnimal(user);
 
         RecruitmentRegistDto dto = RecruitmentRegistDto.builder()
             .name(NAME)
@@ -202,7 +184,6 @@ public class RecruitmentServiceTest {
     public void 공고삭제() throws Exception {
         //given
         User user = initUser();
-        initAnimal(user);
 
         RecruitmentRegistDto dto = RecruitmentRegistDto.builder()
             .name(NAME)

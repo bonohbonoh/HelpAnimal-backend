@@ -1,16 +1,13 @@
 package com.jeonggolee.helpanimal.domain.recruitment.service;
 
-import com.jeonggolee.helpanimal.common.exception.AnimalNotFoundException;
 import com.jeonggolee.helpanimal.common.exception.RecruitmentNotFoundException;
 import com.jeonggolee.helpanimal.common.exception.UserNotFoundException;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentRegistDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.request.RecruitmentUpdateDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentDetailDto;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentListDto;
-import com.jeonggolee.helpanimal.domain.recruitment.entity.Animal;
 import com.jeonggolee.helpanimal.domain.recruitment.entity.Recruitment;
 import com.jeonggolee.helpanimal.domain.recruitment.exception.RecruitmentNotOwnerException;
-import com.jeonggolee.helpanimal.domain.recruitment.repository.AnimalRepository;
 import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRepository;
 import com.jeonggolee.helpanimal.domain.user.dto.UserInfoReadDto;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
@@ -31,7 +28,6 @@ public class RecruitmentService {
     private final RecruitmentRepository recruitmentRepository;
     private final UserService userService;
     private final UserRepository userRepository;
-    private final AnimalRepository animalRepository;
 
     /**
      * 공고등록
@@ -39,8 +35,7 @@ public class RecruitmentService {
     @Transactional
     public Long save(RecruitmentRegistDto dto) {
         User user = validateUser(dto.getEmail());
-        Animal animal = validateAnimal(dto.getAnimal());
-        Recruitment recruitment = dto.toEntity(animal);
+        Recruitment recruitment = dto.toEntity();
         user.addRecruitment(recruitment);
         return recruitmentRepository.save(recruitment).getId();
     }
@@ -56,7 +51,7 @@ public class RecruitmentService {
                 .recruitmentType(recruitment.getRecruitmentType())
                 .author(recruitment.getUser().getNickname())
                 .content(recruitment.getContent())
-                .animalType(recruitment.getAnimal().getName())
+                .animalType(recruitment.getAnimal().toString())
                 .participant(recruitment.getParticipant())
                 .imageUrl(recruitment.getImageUrl())
                 .recruitmentMethod(recruitment.getRecruitmentMethod())
@@ -101,11 +96,6 @@ public class RecruitmentService {
     private User validateUser(String email) {
         return userRepository.findByEmailAndDeletedAtNull(email).orElseThrow(
             () -> new UserNotFoundException("해당 회원이 존재하지 않습니다."));
-    }
-
-    private Animal validateAnimal(String animal) {
-        return animalRepository.findByNameAndDeletedAtNull(animal).orElseThrow(
-            () -> new AnimalNotFoundException("해당 동물은 존재하지 않습니다."));
     }
 
     private Recruitment getRecruitment(Long id) {

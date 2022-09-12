@@ -7,7 +7,6 @@ import com.jeonggolee.helpanimal.domain.recruitment.entity.Animal;
 import com.jeonggolee.helpanimal.domain.recruitment.entity.Recruitment;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentMethod;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentType;
-import com.jeonggolee.helpanimal.domain.recruitment.repository.AnimalRepository;
 import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRepository;
 import com.jeonggolee.helpanimal.domain.user.entity.User;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
@@ -42,7 +41,7 @@ public class RecruitmentControllerTest {
     private final String NAME = "테스트공고";
     private final String EMAIL = "test1@naver.com";
     private final String CONTENT = "본문";
-    private final String ANIMAL = "DOG_";
+    private final String ANIMAL = "DOG";
     private final int PARTICIPANT = 10;
     private final RecruitmentMethod RECRUITMENT_METHOD = RecruitmentMethod.CHOICE;
     private final RecruitmentType RECRUITMENT_TYPE = RecruitmentType.FREE;
@@ -56,9 +55,6 @@ public class RecruitmentControllerTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private AnimalRepository animalRepository;
 
     @Autowired
     private RecruitmentRepository recruitmentRepository;
@@ -79,8 +75,7 @@ public class RecruitmentControllerTest {
     @BeforeAll
     public void 유저_동물_등록() {
         User user = initUser();
-        Animal animal = initAnimal(user);
-        initRecruitment(user, animal);
+        initRecruitment(user);
     }
 
     private User initUser() {
@@ -95,21 +90,13 @@ public class RecruitmentControllerTest {
         return userRepository.save(user);
     }
 
-    private Animal initAnimal(User user) {
-        return animalRepository.save(Animal.builder()
-                .name(ANIMAL)
-                .user(user)
-                .build()
-        );
-    }
-
-    private void initRecruitment(User user, Animal animal) {
+    private void initRecruitment(User user) {
         RECRUITMENT_ID = recruitmentRepository.save(
                 Recruitment.builder()
                         .name(NAME)
                         .user(user)
                         .content(CONTENT)
-                        .animal(animal)
+                        .animal(Animal.CAT)
                         .participant(PARTICIPANT)
                         .recruitmentMethod(RECRUITMENT_METHOD)
                         .recruitmentType(RECRUITMENT_TYPE)

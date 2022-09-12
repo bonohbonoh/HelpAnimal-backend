@@ -17,7 +17,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -65,8 +64,8 @@ public class Recruitment extends BaseTimeEntity {
     /**
      * 봉사 구분 (개, 고양이 등등)
      */
-    @OneToOne
-    @JoinColumn(name = "animal_type")
+    @Column
+    @Enumerated(value = EnumType.STRING)
     private Animal animal;
 
     /**
