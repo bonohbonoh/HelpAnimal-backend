@@ -55,7 +55,7 @@ public class Recruitment extends BaseTimeEntity {
      */
     @ManyToOne
     @JoinColumn(name = "author_id")
-    private UserEntity userEntity;
+    private UserEntity user;
 
     /**
      * 내용
@@ -113,7 +113,7 @@ public class Recruitment extends BaseTimeEntity {
     }
 
     public void addUser(UserEntity userEntity) {
-        this.userEntity = userEntity;
+        this.user = userEntity;
     }
 
 

@@ -2,6 +2,7 @@ package com.jeonggolee.helpanimal.config.swagger;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -28,7 +29,8 @@ public class SwaggerConfig {
                 .build()
                 .securityContexts(Arrays.asList(securityContext()))
                 .securitySchemes(Arrays.asList(apiKey()))
-                .useDefaultResponseMessages(true);
+                .useDefaultResponseMessages(true)
+                .ignoredParameterTypes(AuthenticationPrincipal.class);
     }
     private ApiKey apiKey() {
         return new ApiKey("JWT", "X-AUTH-TOKEN", "header");

@@ -28,7 +28,7 @@ public class CrewMembers extends BaseTimeEntity{
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private UserEntity user;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -43,7 +43,7 @@ public class CrewMembers extends BaseTimeEntity{
     }
 
     public void registerUser(UserEntity userEntity){
-        this.userEntity = userEntity;
+        this.user = userEntity;
     }
 
     private void removeCrew(){
@@ -51,7 +51,7 @@ public class CrewMembers extends BaseTimeEntity{
     }
 
     private void removeUser(){
-        this.userEntity = null;
+        this.user = null;
     }
 
     @Override

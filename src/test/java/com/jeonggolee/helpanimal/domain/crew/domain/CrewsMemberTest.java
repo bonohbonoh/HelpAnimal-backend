@@ -36,7 +36,7 @@ class CrewsMemberTest {
 
         crewMembers = CrewMembers.builder()
                 .id(0L)
-                .userEntity(null)
+                .user(null)
                 .crews(null)
                 .role(CrewMemberRole.MASTER)
                 .build();
@@ -62,7 +62,7 @@ class CrewsMemberTest {
     void registerUserTest() {
         crewMembers.registerUser(userEntity);
 
-        assertThat(crewMembers.getUserEntity()).isEqualTo(userEntity);
+        assertThat(crewMembers.getUser()).isEqualTo(userEntity);
     }
 
     @Test

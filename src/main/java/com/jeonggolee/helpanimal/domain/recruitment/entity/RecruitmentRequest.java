@@ -36,7 +36,7 @@ public class RecruitmentRequest extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private UserEntity user;
 
     @Column(length = 50, nullable = false)
     private String comment;
@@ -54,6 +54,6 @@ public class RecruitmentRequest extends BaseTimeEntity {
     }
 
     public void addUser(UserEntity userEntity) {
-        this.userEntity = userEntity;
+        this.user = userEntity;
     }
 }

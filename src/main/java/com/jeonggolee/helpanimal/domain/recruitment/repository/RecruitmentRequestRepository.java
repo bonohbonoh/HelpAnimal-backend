@@ -23,7 +23,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
             "     ON ra.deletedAt IS NULL " +
             "    AND u.deletedAt IS NULL " +
             "WHERE ra.id = :raId " +
-            "AND   u.userId = :userId "
+            "AND   u.id = :userId "
     )
     List<RecruitmentRequest> findByHistory(@Param("raId") Long raId, @Param("userId") Long userId);
 
@@ -43,7 +43,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
             ") " +
             "FROM RecruitmentRequest ra " +
             "INNER JOIN UserEntity u " +
-            "       ON ra.user.userId = u.id " +
+            "       ON ra.user.id = u.id " +
             "       AND u.deletedAt IS NULL " +
             "INNER JOIN Recruitment r " +
             "       ON r.id = ra.recruitment.id " +
@@ -54,7 +54,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
             "SELECT count(ra) " +
                 "FROM RecruitmentRequest ra " +
                 "INNER JOIN UserEntity u " +
-                "     ON ra.user.userId = u.id " +
+                "     ON ra.user.id = u.id " +
                 "     AND u.deletedAt IS NULL " +
                 "INNER JOIN Recruitment r " +
                 "     ON r.id = ra.recruitment.id " +
@@ -76,7 +76,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
             ") " +
             "FROM RecruitmentRequest ra " +
             "INNER JOIN UserEntity u " +
-            "       ON ra.user.userId = u.id " +
+            "       ON ra.user.id = u.id " +
             "       AND u.deletedAt IS NULL " +
             "INNER JOIN Recruitment r " +
             "       ON r.id = ra.recruitment.id " +
@@ -87,7 +87,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
             "SELECT count(ra) " +
                 "FROM RecruitmentRequest ra " +
                 "INNER JOIN UserEntity u " +
-                "     ON ra.user.userId = u.id " +
+                "     ON ra.user.id = u.id " +
                 "     AND u.deletedAt IS NULL " +
                 "INNER JOIN Recruitment r " +
                 "     ON r.id = ra.recruitment.id " +

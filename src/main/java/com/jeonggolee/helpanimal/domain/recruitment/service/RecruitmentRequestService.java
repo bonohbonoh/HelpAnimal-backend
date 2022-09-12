@@ -51,7 +51,7 @@ public class RecruitmentRequestService {
         RecruitmentRequest recruitmentRequest = findByIdAndDeletedAtIsNull(id).orElseThrow(
             () -> new RecruitmentApplicationNotFoundException("해당 신청내역이 존재하지 않습니다."));
         Recruitment recruitment = recruitmentRequest.getRecruitment();
-        UserEntity userEntity = recruitmentRequest.getUserEntity();
+        UserEntity userEntity = recruitmentRequest.getUser();
         userEntity.deleteRecruitment(recruitment);
         recruitment.deleteRequest(recruitmentRequest);
         recruitmentRequest.delete();
@@ -121,7 +121,7 @@ public class RecruitmentRequestService {
             .id(recruitmentRequest.getId())
             .recruitmentId(recruitmentRequest.getRecruitment().getId())
             .recruitmentName(recruitmentRequest.getRecruitment().getName())
-            .email(recruitmentRequest.getUserEntity().getEmail())
+            .email(recruitmentRequest.getUser().getEmail())
             .comment(recruitmentRequest.getComment())
             .status(recruitmentRequest.getStatus())
             .build();

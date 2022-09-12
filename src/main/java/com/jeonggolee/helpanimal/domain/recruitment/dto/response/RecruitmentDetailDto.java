@@ -33,7 +33,7 @@ public class RecruitmentDetailDto {
                 .id(recruitment.getId())
                 .name(recruitment.getName())
                 .recruitmentType(recruitment.getRecruitmentType())
-                .author(recruitment.getUserEntity().getNickname())
+                .author(recruitment.getUser().getNickname())
                 .content(recruitment.getContent())
                 .animalType(recruitment.getAnimal().toString())
                 .participant(recruitment.getParticipant())

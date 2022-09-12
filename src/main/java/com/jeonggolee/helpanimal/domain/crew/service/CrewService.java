@@ -58,7 +58,7 @@ public class CrewService {
     //크루마스터 생성
     private CrewMembers createCrewMaster(UserEntity userEntity){
         return CrewMembers.builder()
-                .userEntity(userEntity)
+                .user(userEntity)
                 .role(CrewMemberRole.MASTER)
                 .build();
     }

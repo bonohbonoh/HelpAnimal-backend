@@ -49,7 +49,7 @@ public class RecruitmentService {
                 .id(recruitment.getId())
                 .name(recruitment.getName())
                 .recruitmentType(recruitment.getRecruitmentType())
-                .author(recruitment.getUserEntity().getNickname())
+                .author(recruitment.getUser().getNickname())
                 .content(recruitment.getContent())
                 .animalType(recruitment.getAnimal().toString())
                 .participant(recruitment.getParticipant())
@@ -71,7 +71,7 @@ public class RecruitmentService {
     public void updateRecruitment(Long id, RecruitmentUpdateDto dto) throws Exception {
         Recruitment recruitment = getRecruitment(id);
 
-        validateAuthor(recruitment.getUserEntity());
+        validateAuthor(recruitment.getUser());
 
         recruitment.updateRecruitmentName(dto.getName());
         recruitment.updateContent(dto.getContent());
@@ -86,7 +86,7 @@ public class RecruitmentService {
      */
     public void deleteRecruitment(Long id) throws Exception {
         Recruitment recruitment = getRecruitment(id);
-        UserEntity userEntity = recruitment.getUserEntity();
+        UserEntity userEntity = recruitment.getUser();
         validateAuthor(userEntity);
         userEntity.deleteRecruitment(recruitment);
         recruitment.delete();
