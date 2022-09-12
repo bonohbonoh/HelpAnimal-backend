@@ -161,7 +161,7 @@ public class RecruitmentRequestServiceTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("createDate").descending());
         //when
         RecruitmentApplicationSearchDto dto = recruitmentRequestService.findRecruitmentApplicationByUser(
-            pageable, userEntity.getUserId());
+            pageable, userEntity.getId());
         //then
         assertThat(dto.getNumberOfElements()).isEqualTo(10);
         assertThat(dto.getTotalElements()).isEqualTo(12L);

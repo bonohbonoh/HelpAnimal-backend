@@ -43,7 +43,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
             ") " +
             "FROM RecruitmentRequest ra " +
             "INNER JOIN UserEntity u " +
-            "       ON ra.user.userId = u.userId " +
+            "       ON ra.user.userId = u.id " +
             "       AND u.deletedAt IS NULL " +
             "INNER JOIN Recruitment r " +
             "       ON r.id = ra.recruitment.id " +
@@ -54,7 +54,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
             "SELECT count(ra) " +
                 "FROM RecruitmentRequest ra " +
                 "INNER JOIN UserEntity u " +
-                "     ON ra.user.userId = u.userId " +
+                "     ON ra.user.userId = u.id " +
                 "     AND u.deletedAt IS NULL " +
                 "INNER JOIN Recruitment r " +
                 "     ON r.id = ra.recruitment.id " +
@@ -76,23 +76,23 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
             ") " +
             "FROM RecruitmentRequest ra " +
             "INNER JOIN UserEntity u " +
-            "       ON ra.user.userId = u.userId " +
+            "       ON ra.user.userId = u.id " +
             "       AND u.deletedAt IS NULL " +
             "INNER JOIN Recruitment r " +
             "       ON r.id = ra.recruitment.id " +
             "       AND r.deletedAt IS NULL " +
-            "WHERE u.userId = :userId " +
+            "WHERE u.id = :userId " +
             "AND   ra.deletedAt IS NULL ",
         countQuery =
             "SELECT count(ra) " +
                 "FROM RecruitmentRequest ra " +
                 "INNER JOIN UserEntity u " +
-                "     ON ra.user.userId = u.userId " +
+                "     ON ra.user.userId = u.id " +
                 "     AND u.deletedAt IS NULL " +
                 "INNER JOIN Recruitment r " +
                 "     ON r.id = ra.recruitment.id " +
                 "     AND r.deletedAt IS NULL " +
-                "WHERE u.userId = :userId " +
+                "WHERE u.id = :userId " +
                 "AND   ra.deletedAt IS NULL ")
     Page<RecruitmentApplicationDetailDto> findRecruitmentApplicationByUserId(Pageable pageable,
         @Param("userId") Long id);

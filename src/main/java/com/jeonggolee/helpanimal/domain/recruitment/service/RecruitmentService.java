@@ -105,7 +105,7 @@ public class RecruitmentService {
 
     private void validateAuthor(UserEntity userEntity) {
         UserInfoReadDto userInfoReadDto = userService.getUserInfo();
-        if (userInfoReadDto.getUserId() != userEntity.getUserId()) {
+        if (userInfoReadDto.getUserId() != userEntity.getId()) {
             throw new RecruitmentNotOwnerException("해당 공고의 작성자가 아닙니다.");
         }
     }

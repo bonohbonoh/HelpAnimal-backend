@@ -36,7 +36,7 @@ public class RecruitmentRequestService {
         UserEntity requestUserEntity = findUser(dto.getEmail());
         Recruitment recruitment = findRecruitment(dto.getRecruitmentId());
         validateAvailableRequest(recruitment);
-        deleteRecruitmentApplicationHistory(recruitment.getId(), requestUserEntity.getUserId());
+        deleteRecruitmentApplicationHistory(recruitment.getId(), requestUserEntity.getId());
         RecruitmentRequest request = RecruitmentRequest.builder()
             .comment(dto.getComment())
             .status(RecruitmentApplicationStatus.REQUEST)

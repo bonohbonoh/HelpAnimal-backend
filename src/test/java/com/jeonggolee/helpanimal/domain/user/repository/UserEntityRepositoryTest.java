@@ -74,7 +74,7 @@ public class UserEntityRepositoryTest {
         UserEntity saveUserEntity = userRepository.save(userEntity);
 
         //when
-        Long userId = saveUserEntity.getUserId();
+        Long userId = saveUserEntity.getId();
 
         //then
         UserEntity readUserEntity = userRepository.getById(userId);
@@ -107,7 +107,7 @@ public class UserEntityRepositoryTest {
         userRepository.save(saveUserEntity);
 
         //then
-        UserEntity updateUserEntity = userRepository.getById(userEntity.getUserId());
+        UserEntity updateUserEntity = userRepository.getById(userEntity.getId());
         assertThat(updateUserEntity.getPassword()).isEqualTo("update password");
         assertThat(updateUserEntity.getNickname()).isEqualTo("update nickname");
         assertThat(updateUserEntity.getProfileImage()).isEqualTo("update image");
@@ -129,7 +129,7 @@ public class UserEntityRepositoryTest {
         UserEntity saveUserEntity = userRepository.save(userEntity);
 
         //when
-        Long deleteUserId = saveUserEntity.getUserId();
+        Long deleteUserId = saveUserEntity.getId();
         userRepository.deleteById(deleteUserId);
 
         //then
