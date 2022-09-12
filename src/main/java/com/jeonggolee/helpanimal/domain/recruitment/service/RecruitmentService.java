@@ -10,7 +10,7 @@ import com.jeonggolee.helpanimal.domain.recruitment.entity.Recruitment;
 import com.jeonggolee.helpanimal.domain.recruitment.exception.RecruitmentNotOwnerException;
 import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRepository;
 import com.jeonggolee.helpanimal.domain.user.dto.UserInfoReadDto;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +34,9 @@ public class RecruitmentService {
      */
     @Transactional
     public Long save(RecruitmentRegistDto dto) {
-        User user = validateUser(dto.getEmail());
+        UserEntity userEntity = validateUser(dto.getEmail());
         Recruitment recruitment = dto.toEntity();
-        user.addRecruitment(recruitment);
+        userEntity.addRecruitment(recruitment);
         return recruitmentRepository.save(recruitment).getId();
     }
 
@@ -86,14 +86,14 @@ public class RecruitmentService {
      */
     public void deleteRecruitment(Long id) throws Exception {
         Recruitment recruitment = getRecruitment(id);
-        User user = recruitment.getUser();
-        validateAuthor(user);
-        user.deleteRecruitment(recruitment);
+        UserEntity userEntity = recruitment.getUser();
+        validateAuthor(userEntity);
+        userEntity.deleteRecruitment(recruitment);
         recruitment.delete();
         recruitmentRepository.save(recruitment);
     }
 
-    private User validateUser(String email) {
+    private UserEntity validateUser(String email) {
         return userRepository.findByEmailAndDeletedAtNull(email).orElseThrow(
             () -> new UserNotFoundException("해당 회원이 존재하지 않습니다."));
     }
@@ -103,9 +103,9 @@ public class RecruitmentService {
             () -> new RecruitmentNotFoundException("해당 공고를 찾을 수 없습니다."));
     }
 
-    private void validateAuthor(User user) {
+    private void validateAuthor(UserEntity userEntity) {
         UserInfoReadDto userInfoReadDto = userService.getUserInfo();
-        if (userInfoReadDto.getUserId() != user.getUserId()) {
+        if (userInfoReadDto.getUserId() != userEntity.getId()) {
             throw new RecruitmentNotOwnerException("해당 공고의 작성자가 아닙니다.");
         }
     }

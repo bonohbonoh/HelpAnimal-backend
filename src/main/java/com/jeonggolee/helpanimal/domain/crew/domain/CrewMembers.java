@@ -2,7 +2,7 @@ package com.jeonggolee.helpanimal.domain.crew.domain;
 
 import com.jeonggolee.helpanimal.common.entity.BaseTimeEntity;
 import com.jeonggolee.helpanimal.domain.crew.enums.CrewMemberRole;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,7 +28,7 @@ public class CrewMembers extends BaseTimeEntity{
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -42,8 +42,8 @@ public class CrewMembers extends BaseTimeEntity{
         this.crews = crews;
     }
 
-    public void registerUser(User user){
-        this.user = user;
+    public void registerUser(UserEntity userEntity){
+        this.user = userEntity;
     }
 
     private void removeCrew(){

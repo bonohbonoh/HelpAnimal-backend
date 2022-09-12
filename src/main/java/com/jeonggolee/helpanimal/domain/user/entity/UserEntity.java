@@ -30,11 +30,11 @@ import lombok.ToString;
 @Entity
 @Table(name = "user")
 @Builder
-public class User extends BaseTimeEntity {
+public class UserEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long id;
 
     @Column(nullable = false, length = 40, unique = true)
     private String email;
@@ -115,7 +115,7 @@ public class User extends BaseTimeEntity {
         }
     }
 
-    public User(String email, String password, String name, String nickname, String profileImage,
+    public UserEntity(String email, String password, String name, String nickname, String profileImage,
         Role role) {
         this.email = email;
         this.password = password;

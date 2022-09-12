@@ -3,7 +3,7 @@ package com.jeonggolee.helpanimal.domain.user.service;
 import com.jeonggolee.helpanimal.common.exception.UserNotFoundException;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 @ActiveProfiles("local")
-public class UserServiceFailTest {
+public class UserEntityServiceFailTest {
     private final Role GUEST = Role.GUEST;
     private final String EMAIL = "test@naver.com";
     private final String WRONG_EMAIL = "wrong@naver.com";
@@ -48,7 +48,7 @@ public class UserServiceFailTest {
 
     @BeforeAll
     public void initUser() {
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email(EMAIL)
                 .password(passwordEncoder.encode(PASSWORD))
                 .nickname(NICKNAME)
@@ -56,7 +56,7 @@ public class UserServiceFailTest {
                 .name(NAME)
                 .role(GUEST)
                 .build();
-        userRepository.save(user);
+        userRepository.save(userEntity);
     }
 
     @Test
@@ -110,13 +110,13 @@ public class UserServiceFailTest {
         RuntimeException e = assertThrows(RuntimeException.class, () -> userService.authEmail(failUrl));
 
         //then
-        User user = userRepository.findOne(searchSpecification.searchWithEmailEqual(EMAIL))
+        UserEntity userEntity = userRepository.findOne(searchSpecification.searchWithEmailEqual(EMAIL))
                 .orElseThrow(() -> new UserNotFoundException("유저가 존재하지 않습니다."));
-        assertThat(user.getUrl()).isNotNull();
+        assertThat(userEntity.getUrl()).isNotNull();
         assertThat(url.equals(failUrl)).isFalse();
-        assertThat(failUrl.equals(user.getUrl())).isFalse();
+        assertThat(failUrl.equals(userEntity.getUrl())).isFalse();
         assertThat(e.getMessage()).isEqualTo("잘못된 Url 입니다.");
-        assertThat(user.getRole()).isEqualTo(GUEST);
+        assertThat(userEntity.getRole()).isEqualTo(GUEST);
     }
 
 }

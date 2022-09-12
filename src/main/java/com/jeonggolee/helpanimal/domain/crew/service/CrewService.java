@@ -12,7 +12,7 @@ import com.jeonggolee.helpanimal.domain.crew.enums.CrewMemberRole;
 import com.jeonggolee.helpanimal.domain.crew.query.CrewSpecification;
 import com.jeonggolee.helpanimal.domain.crew.repository.CrewMemberRepository;
 import com.jeonggolee.helpanimal.domain.crew.repository.CrewRepository;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +36,10 @@ public class CrewService {
     public Long createCrew(CreateCrewDto createCrewDto, String masterEmail){
         validateDuplicateCrewName(createCrewDto.getName());
 
-        User user = userRepository.findOne(uss.searchWithEmailEqual(masterEmail))
+        UserEntity userEntity = userRepository.findOne(uss.searchWithEmailEqual(masterEmail))
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자 입니다."));
 
-        CrewMembers crewMaster = createCrewMaster(user);
+        CrewMembers crewMaster = createCrewMaster(userEntity);
         crewMemberRepository.save(crewMaster);
 
         Crews crews = createCrewDto.toEntity();
@@ -56,9 +56,9 @@ public class CrewService {
     }
 
     //크루마스터 생성
-    private CrewMembers createCrewMaster(User user){
+    private CrewMembers createCrewMaster(UserEntity userEntity){
         return CrewMembers.builder()
-                .user(user)
+                .user(userEntity)
                 .role(CrewMemberRole.MASTER)
                 .build();
     }

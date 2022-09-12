@@ -1,6 +1,6 @@
 package com.jeonggolee.helpanimal.domain.user.query;
 
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 public class UserSpecification {
     //유저 ID로 조회
-    public Specification<User> searchWithId(Long userId) {
+    public Specification<UserEntity> searchWithId(Long userId) {
         return (root, query, builder) -> {
             List<Predicate> predicateList = new ArrayList<>();
 
@@ -25,7 +25,7 @@ public class UserSpecification {
     }
 
     //유저 닉네임으로 조회
-    public Specification<User> searchWithNickname(String nickname) {
+    public Specification<UserEntity> searchWithNickname(String nickname) {
         return (root, query, builder) -> {
             List<Predicate> predicateList = new ArrayList<>();
 
@@ -37,7 +37,7 @@ public class UserSpecification {
     }
 
     //유저 이메일로 조회
-    public Specification<User> searchWithEmail(String email) {
+    public Specification<UserEntity> searchWithEmail(String email) {
         return (root, query, builder) -> {
             List<Predicate> predicateList = new ArrayList<>();
 
@@ -49,7 +49,7 @@ public class UserSpecification {
     }
 
     //유저 이메일로 조회
-    public Specification<User> searchWithEmailEqual(String email) {
+    public Specification<UserEntity> searchWithEmailEqual(String email) {
         return (root, query, builder) -> {
             List<Predicate> predicateList = new ArrayList<>();
 
@@ -61,27 +61,27 @@ public class UserSpecification {
     }
 
     //삭제되지 않은 조건 쿼리
-    private Predicate withNotDeleted(Root<User> root, CriteriaBuilder builder) {
+    private Predicate withNotDeleted(Root<UserEntity> root, CriteriaBuilder builder) {
         return builder.isNull(root.get("deletedAt"));
     }
 
     //유저아이디 조건 쿼리
-    private Predicate withUserId(Long userId, Root<User> root, CriteriaBuilder builder) {
+    private Predicate withUserId(Long userId, Root<UserEntity> root, CriteriaBuilder builder) {
         return builder.equal(root.get("user_id"), userId);
     }
 
     //유저 닉네임 조건 쿼리
-    private Predicate withNickname(String nickname, Root<User> root, CriteriaBuilder builder) {
+    private Predicate withNickname(String nickname, Root<UserEntity> root, CriteriaBuilder builder) {
         return builder.like(root.get("nickname"), nickname + "%");
     }
 
     //유저 이메일 조건 쿼리
-    private Predicate withEmail(String email, Root<User> root, CriteriaBuilder builder) {
+    private Predicate withEmail(String email, Root<UserEntity> root, CriteriaBuilder builder) {
         return builder.like(root.get("email"), email + "%");
     }
 
     //유저 이메일 일치 쿼리
-    private Predicate withEmailEqual(String email, Root<User> root, CriteriaBuilder builder) {
+    private Predicate withEmailEqual(String email, Root<UserEntity> root, CriteriaBuilder builder) {
         return builder.equal(root.get("email"), email);
     }
 }

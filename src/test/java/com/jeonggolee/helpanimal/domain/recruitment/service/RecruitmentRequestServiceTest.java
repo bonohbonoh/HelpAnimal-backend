@@ -13,7 +13,7 @@ import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentMethod;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentType;
 import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRepository;
 import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRequestRepository;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import java.util.ArrayList;
@@ -42,18 +42,18 @@ public class RecruitmentRequestServiceTest {
     @Autowired
     private UserRepository userRepository;
 
-    private RecruitmentRequest initRecruitmentRequest(Recruitment recruitment, User user,
+    private RecruitmentRequest initRecruitmentRequest(Recruitment recruitment, UserEntity userEntity,
         String comment) {
         return RecruitmentRequest.builder()
             .recruitment(recruitment)
-            .user(user)
+            .userEntity(userEntity)
             .comment(comment)
             .status(RecruitmentApplicationStatus.REQUEST)
             .build();
     }
 
-    private User initUser(String email, String nickname) {
-        return User.builder()
+    private UserEntity initUser(String email, String nickname) {
+        return UserEntity.builder()
             .email(email)
             .password("PASSWORD")
             .name("NAME")
@@ -63,13 +63,13 @@ public class RecruitmentRequestServiceTest {
             .build();
     }
 
-    private Recruitment initRecruitment(User user, String name) {
+    private Recruitment initRecruitment(UserEntity userEntity, String name) {
         return Recruitment.builder()
             .name(name)
             .recruitmentType(RecruitmentType.FREE)
             .content("CONTENT")
             .participant(1)
-            .user(user)
+            .userEntity(userEntity)
             .imageUrl("TEST")
             .recruitmentMethod(RecruitmentMethod.FIRST_COME)
             .build();
@@ -78,10 +78,10 @@ public class RecruitmentRequestServiceTest {
     @Test
     void 공고신청() {
         //given
-        User user = initUser("EMAIL", "nick");
-        Recruitment recruitment = initRecruitment(user, "NAME");
+        UserEntity userEntity = initUser("EMAIL", "nick");
+        Recruitment recruitment = initRecruitment(userEntity, "NAME");
 
-        userRepository.save(user);
+        userRepository.save(userEntity);
         recruitmentRepository.save(recruitment);
 
         RecruitmentApplicationRequestDto dto = RecruitmentApplicationRequestDto.builder()
@@ -99,11 +99,11 @@ public class RecruitmentRequestServiceTest {
     @Test
     void 신청내역_삭제() {
         //given
-        User user = initUser("EMAIL", "nick");
-        Recruitment recruitment = initRecruitment(user, "NAME");
-        RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, user, "TEST");
+        UserEntity userEntity = initUser("EMAIL", "nick");
+        Recruitment recruitment = initRecruitment(userEntity, "NAME");
+        RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, userEntity, "TEST");
 
-        userRepository.save(user);
+        userRepository.save(userEntity);
         recruitmentRepository.save(recruitment);
         recruitmentRequestRepository.save(recruitmentRequest);
 
@@ -112,21 +112,21 @@ public class RecruitmentRequestServiceTest {
 
         //then
         Optional<RecruitmentRequest> result = recruitmentRequestRepository
-            .findByIdAndUserAndDeletedAtIsNull(recruitmentRequest.getId(), user);
+            .findByIdAndUserAndDeletedAtIsNull(recruitmentRequest.getId(), userEntity);
         assertThat(result.isPresent()).isFalse();
     }
 
     @Test
     void 해당공고_신청내역_조회() {
         //given
-        User user = initUser("EMAIL", "nick");
-        Recruitment recruitment = initRecruitment(user, "NAME");
+        UserEntity userEntity = initUser("EMAIL", "nick");
+        Recruitment recruitment = initRecruitment(userEntity, "NAME");
 
-        userRepository.save(user);
+        userRepository.save(userEntity);
         recruitmentRepository.save(recruitment);
 
         for (int i = 0; i < 12; i++) {
-            RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, user,
+            RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, userEntity,
                 "TEST" + i);
             recruitmentRequestRepository.save(recruitmentRequest);
 
@@ -144,16 +144,16 @@ public class RecruitmentRequestServiceTest {
     @Test
     void 해당유저_신청내역_조회() {
         //given
-        User user = initUser("EMAIL", "nick");
+        UserEntity userEntity = initUser("EMAIL", "nick");
         List<Recruitment> recruitments = new ArrayList<>();
-        userRepository.save(user);
+        userRepository.save(userEntity);
         for (int i = 0; i < 12; i++) {
-            Recruitment recruitment = initRecruitment(user, "NAME" + i);
+            Recruitment recruitment = initRecruitment(userEntity, "NAME" + i);
             recruitmentRepository.save(recruitment);
             recruitments.add(recruitment);
         }
         for (Recruitment recruitment : recruitments) {
-            RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, user,
+            RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, userEntity,
                 "TEST");
             recruitmentRequestRepository.save(recruitmentRequest);
         }
@@ -161,7 +161,7 @@ public class RecruitmentRequestServiceTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("createDate").descending());
         //when
         RecruitmentApplicationSearchDto dto = recruitmentRequestService.findRecruitmentApplicationByUser(
-            pageable, user.getUserId());
+            pageable, userEntity.getId());
         //then
         assertThat(dto.getNumberOfElements()).isEqualTo(10);
         assertThat(dto.getTotalElements()).isEqualTo(12L);
@@ -170,13 +170,13 @@ public class RecruitmentRequestServiceTest {
     @Test
     void 참여신청_상세조회() {
         //given
-        User user = initUser("EMAIL", "nick");
-        Recruitment recruitment = initRecruitment(user, "NAME");
+        UserEntity userEntity = initUser("EMAIL", "nick");
+        Recruitment recruitment = initRecruitment(userEntity, "NAME");
 
-        userRepository.save(user);
+        userRepository.save(userEntity);
         recruitmentRepository.save(recruitment);
 
-        RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, user,
+        RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, userEntity,
             "COMMENT");
         Long requestId = recruitmentRequestRepository.save(recruitmentRequest).getId();
 
@@ -185,22 +185,23 @@ public class RecruitmentRequestServiceTest {
 
         //then
         assertThat(result.getRecruitmentName()).isEqualTo(recruitment.getName());
-        assertThat(result.getEmail()).isEqualTo(user.getEmail());
+        assertThat(result.getEmail()).isEqualTo(userEntity.getEmail());
         assertThat(result.getComment()).isEqualTo("COMMENT");
     }
 
     @Test
     void 참가신청_인원이_다_찼을땐_오류발생() {
         //given
-        User user = initUser("EMAIL", "nick");
-        User requestUser = initUser("EMAIL1", "nick1");
-        User exceptionUser = initUser("EMAIL2", "nick2");
-        Recruitment recruitment = initRecruitment(user, "NAME");
+        UserEntity userEntity = initUser("EMAIL", "nick");
+        UserEntity requestUserEntity = initUser("EMAIL1", "nick1");
+        UserEntity exceptionUserEntity = initUser("EMAIL2", "nick2");
+        Recruitment recruitment = initRecruitment(userEntity, "NAME");
 
-        userRepository.saveAll(List.of(user, requestUser, exceptionUser));
+        userRepository.saveAll(List.of(userEntity, requestUserEntity, exceptionUserEntity));
         recruitmentRepository.save(recruitment);
 
-        RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment, requestUser,
+        RecruitmentRequest recruitmentRequest = initRecruitmentRequest(recruitment,
+            requestUserEntity,
             "TEST");
         recruitmentRequestRepository.save(recruitmentRequest);
 

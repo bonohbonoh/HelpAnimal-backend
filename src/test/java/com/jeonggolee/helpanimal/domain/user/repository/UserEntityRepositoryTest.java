@@ -1,6 +1,6 @@
 package com.jeonggolee.helpanimal.domain.user.repository;
 
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("local")
-public class UserRepositoryTest {
+public class UserEntityRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -37,7 +37,7 @@ public class UserRepositoryTest {
     public void insertTest() {
 
         //given
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email(EMAIL)
                 .password(PASSWORD)
                 .name(NAME)
@@ -47,15 +47,15 @@ public class UserRepositoryTest {
                 .build();
 
         //when
-        User saveUser = userRepository.save(user);
+        UserEntity saveUserEntity = userRepository.save(userEntity);
 
         //then
-        assertThat(saveUser.getEmail()).isEqualTo(EMAIL);
-        assertThat(saveUser.getPassword()).isEqualTo(PASSWORD);
-        assertThat(saveUser.getName()).isEqualTo(NAME);
-        assertThat(saveUser.getNickname()).isEqualTo(NICKNAME);
-        assertThat(saveUser.getProfileImage()).isEqualTo(IMAGE);
-        assertThat(saveUser.getRole()).isEqualTo(GUEST);
+        assertThat(saveUserEntity.getEmail()).isEqualTo(EMAIL);
+        assertThat(saveUserEntity.getPassword()).isEqualTo(PASSWORD);
+        assertThat(saveUserEntity.getName()).isEqualTo(NAME);
+        assertThat(saveUserEntity.getNickname()).isEqualTo(NICKNAME);
+        assertThat(saveUserEntity.getProfileImage()).isEqualTo(IMAGE);
+        assertThat(saveUserEntity.getRole()).isEqualTo(GUEST);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class UserRepositoryTest {
     public void readTest() {
 
         //given
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email(EMAIL)
                 .password(PASSWORD)
                 .name(NAME)
@@ -71,26 +71,26 @@ public class UserRepositoryTest {
                 .profileImage(IMAGE)
                 .role(GUEST)
                 .build();
-        User saveUser = userRepository.save(user);
+        UserEntity saveUserEntity = userRepository.save(userEntity);
 
         //when
-        Long userId = saveUser.getUserId();
+        Long userId = saveUserEntity.getId();
 
         //then
-        User readUser = userRepository.getById(userId);
-        assertThat(readUser.getEmail()).isEqualTo(EMAIL);
-        assertThat(readUser.getPassword()).isEqualTo(PASSWORD);
-        assertThat(readUser.getName()).isEqualTo(NAME);
-        assertThat(readUser.getNickname()).isEqualTo(NICKNAME);
-        assertThat(readUser.getProfileImage()).isEqualTo(IMAGE);
-        assertThat(readUser.getRole()).isEqualTo(GUEST);
+        UserEntity readUserEntity = userRepository.getById(userId);
+        assertThat(readUserEntity.getEmail()).isEqualTo(EMAIL);
+        assertThat(readUserEntity.getPassword()).isEqualTo(PASSWORD);
+        assertThat(readUserEntity.getName()).isEqualTo(NAME);
+        assertThat(readUserEntity.getNickname()).isEqualTo(NICKNAME);
+        assertThat(readUserEntity.getProfileImage()).isEqualTo(IMAGE);
+        assertThat(readUserEntity.getRole()).isEqualTo(GUEST);
     }
 
     @Test
     @DisplayName("유저 수정 테스트")
     public void updateTest() {
         //given
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email(EMAIL)
                 .password(PASSWORD)
                 .name(NAME)
@@ -98,19 +98,19 @@ public class UserRepositoryTest {
                 .profileImage(IMAGE)
                 .role(GUEST)
                 .build();
-        User saveUser = userRepository.save(user);
+        UserEntity saveUserEntity = userRepository.save(userEntity);
 
         //when
-        saveUser.updateNickname("update nickname");
-        saveUser.updatePassword("update password");
-        saveUser.updateProfileImage("update image");
-        userRepository.save(saveUser);
+        saveUserEntity.updateNickname("update nickname");
+        saveUserEntity.updatePassword("update password");
+        saveUserEntity.updateProfileImage("update image");
+        userRepository.save(saveUserEntity);
 
         //then
-        User updateUser = userRepository.getById(user.getUserId());
-        assertThat(updateUser.getPassword()).isEqualTo("update password");
-        assertThat(updateUser.getNickname()).isEqualTo("update nickname");
-        assertThat(updateUser.getProfileImage()).isEqualTo("update image");
+        UserEntity updateUserEntity = userRepository.getById(userEntity.getId());
+        assertThat(updateUserEntity.getPassword()).isEqualTo("update password");
+        assertThat(updateUserEntity.getNickname()).isEqualTo("update nickname");
+        assertThat(updateUserEntity.getProfileImage()).isEqualTo("update image");
 
     }
 
@@ -118,7 +118,7 @@ public class UserRepositoryTest {
     @DisplayName("유저 삭제 테스트")
     public void deleteTest() {
         //given
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email(EMAIL)
                 .password(PASSWORD)
                 .name(NAME)
@@ -126,14 +126,14 @@ public class UserRepositoryTest {
                 .profileImage(IMAGE)
                 .role(GUEST)
                 .build();
-        User saveUser = userRepository.save(user);
+        UserEntity saveUserEntity = userRepository.save(userEntity);
 
         //when
-        Long deleteUserId = saveUser.getUserId();
+        Long deleteUserId = saveUserEntity.getId();
         userRepository.deleteById(deleteUserId);
 
         //then
-        Optional<User> deleteUser = userRepository.findById(deleteUserId);
+        Optional<UserEntity> deleteUser = userRepository.findById(deleteUserId);
         assertThat(deleteUser.isPresent()).isFalse();
     }
 
@@ -142,7 +142,7 @@ public class UserRepositoryTest {
     public void searchUserTest() {
 
         //given
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email(EMAIL + "search")
                 .password(PASSWORD)
                 .name(NAME)
@@ -152,12 +152,12 @@ public class UserRepositoryTest {
                 .build();
 
         //when
-        userRepository.save(user);
+        userRepository.save(userEntity);
 
         //then
-        Optional<User> findUserEmail = userRepository.findOne(userSpecification.searchWithEmail(EMAIL));
+        Optional<UserEntity> findUserEmail = userRepository.findOne(userSpecification.searchWithEmail(EMAIL));
         assertThat(findUserEmail.isPresent()).isTrue();
-        Optional<User> findUserNickname = userRepository.findOne(userSpecification.searchWithNickname(NICKNAME));
+        Optional<UserEntity> findUserNickname = userRepository.findOne(userSpecification.searchWithNickname(NICKNAME));
         assertThat(findUserNickname.isPresent()).isTrue();
     }
 
@@ -166,7 +166,7 @@ public class UserRepositoryTest {
     public void cantSearchUserTest() {
 
         //given
-        User notSearchUser = User.builder()
+        UserEntity notSearchUserEntity = UserEntity.builder()
                 .email("not search" + EMAIL)
                 .password(PASSWORD)
                 .name(NAME)
@@ -176,12 +176,12 @@ public class UserRepositoryTest {
                 .build();
 
         //when
-        userRepository.save(notSearchUser);
+        userRepository.save(notSearchUserEntity);
 
         //then
-        Optional<User> findUserEmail = userRepository.findOne(userSpecification.searchWithEmail(EMAIL));
+        Optional<UserEntity> findUserEmail = userRepository.findOne(userSpecification.searchWithEmail(EMAIL));
         assertThat(findUserEmail.isPresent()).isFalse();
-        Optional<User> findUserNickname = userRepository.findOne(userSpecification.searchWithNickname(NICKNAME));
+        Optional<UserEntity> findUserNickname = userRepository.findOne(userSpecification.searchWithNickname(NICKNAME));
         assertThat(findUserNickname.isPresent()).isFalse();
     }
 

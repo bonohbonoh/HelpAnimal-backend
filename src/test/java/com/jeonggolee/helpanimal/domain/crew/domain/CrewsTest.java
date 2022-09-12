@@ -1,7 +1,7 @@
 package com.jeonggolee.helpanimal.domain.crew.domain;
 
 import com.jeonggolee.helpanimal.domain.crew.enums.CrewMemberRole;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ class CrewsTest {
 
     @BeforeAll
     void beforeAll(){
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email("테스트이메일")
                 .password("테스트비밀번호")
                 .name("테스트이름")
@@ -30,7 +30,7 @@ class CrewsTest {
 
         crewMembers = CrewMembers.builder()
                 .id(0L)
-                .user(user)
+                .userEntity(userEntity)
 //                .crew(crew)
                 .role(CrewMemberRole.MASTER)
                 .build();

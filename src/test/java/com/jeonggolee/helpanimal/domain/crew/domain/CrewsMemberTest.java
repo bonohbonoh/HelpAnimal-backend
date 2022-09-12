@@ -1,7 +1,7 @@
 package com.jeonggolee.helpanimal.domain.crew.domain;
 
 import com.jeonggolee.helpanimal.domain.crew.enums.CrewMemberRole;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,12 +14,12 @@ import static org.assertj.core.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CrewsMemberTest {
     private CrewMembers crewMembers;
-    private User user;
+    private UserEntity userEntity;
     private Crews crews;
 
     @BeforeAll
     void beforeAll(){
-        user = User.builder()
+        userEntity = UserEntity.builder()
                 .email("테스트이메일")
                 .password("테스트비밀번호")
                 .name("테스트이름")
@@ -60,9 +60,9 @@ class CrewsMemberTest {
 
     @Test
     void registerUserTest() {
-        crewMembers.registerUser(user);
+        crewMembers.registerUser(userEntity);
 
-        assertThat(crewMembers.getUser()).isEqualTo(user);
+        assertThat(crewMembers.getUser()).isEqualTo(userEntity);
     }
 
     @Test

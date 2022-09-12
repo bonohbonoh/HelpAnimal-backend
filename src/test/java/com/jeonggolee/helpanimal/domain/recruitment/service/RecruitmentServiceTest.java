@@ -10,7 +10,7 @@ import com.jeonggolee.helpanimal.domain.recruitment.entity.Recruitment;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentMethod;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentType;
 import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRepository;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import java.util.Optional;
@@ -47,8 +47,8 @@ public class RecruitmentServiceTest {
     private final RecruitmentMethod RECRUITMENT_METHOD = RecruitmentMethod.CHOICE;
     private final RecruitmentType RECRUITMENT_TYPE = RecruitmentType.FREE;
 
-    private User initUser() {
-        User user = User.builder()
+    private UserEntity initUser() {
+        UserEntity userEntity = UserEntity.builder()
             .name("test")
             .email(EMAIL)
             .password("pass")
@@ -56,14 +56,14 @@ public class RecruitmentServiceTest {
             .profileImage("image")
             .role(Role.GUEST)
             .build();
-        return userRepository.save(user);
+        return userRepository.save(userEntity);
     }
 
     @Test
     @DisplayName("공고등록 테스트")
     public void 공고등록() {
         //given
-        User user = initUser();
+        UserEntity userEntity = initUser();
 
         RecruitmentRegistDto dto = RecruitmentRegistDto.builder()
             .name(NAME)
@@ -87,7 +87,7 @@ public class RecruitmentServiceTest {
     @DisplayName("공고전체조회 첫페이지 조회 테스트")
     public void 공고전체조회_페이징() {
         //given
-        User user = initUser();
+        UserEntity userEntity = initUser();
         Pageable pageable = PageRequest.of(0, 10);
 
         for (int i = 0; i < 12; i++) {
@@ -114,7 +114,7 @@ public class RecruitmentServiceTest {
     @DisplayName("공고 상세조회 테스트")
     public void 공고_상세조회() {
         //given
-        User user = initUser();
+        UserEntity userEntity = initUser();
 
         RecruitmentRegistDto dto = RecruitmentRegistDto.builder()
             .name(NAME)
@@ -146,7 +146,7 @@ public class RecruitmentServiceTest {
     @WithMockUser(username = "test1@naver.com", roles = {"USER"})
     public void 공고수정() throws Exception {
         //given
-        User user = initUser();
+        UserEntity userEntity = initUser();
 
         RecruitmentRegistDto dto = RecruitmentRegistDto.builder()
             .name(NAME)
@@ -183,7 +183,7 @@ public class RecruitmentServiceTest {
     @WithMockUser(username = "test1@naver.com", roles = {"USER"})
     public void 공고삭제() throws Exception {
         //given
-        User user = initUser();
+        UserEntity userEntity = initUser();
 
         RecruitmentRegistDto dto = RecruitmentRegistDto.builder()
             .name(NAME)
