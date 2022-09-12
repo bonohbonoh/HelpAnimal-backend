@@ -5,7 +5,7 @@ import com.jeonggolee.helpanimal.domain.crew.dto.CreateCrewDto;
 import com.jeonggolee.helpanimal.domain.crew.dto.UpdateCrewDto;
 import com.jeonggolee.helpanimal.domain.crew.exception.handler.CrewExceptionHandler;
 import com.jeonggolee.helpanimal.domain.crew.service.CrewService;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import org.json.JSONArray;
@@ -62,7 +62,7 @@ class CrewsControllerTest {
     //사용자 생성
     @BeforeAll
     public void createUser(){
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email(requesterEmail)
                 .password("test")
                 .name("테스트이름")
@@ -71,7 +71,7 @@ class CrewsControllerTest {
                 .role(Role.USER)
                 .build();
 
-        userRepository.save(user);
+        userRepository.save(userEntity);
     }
 
     @Test

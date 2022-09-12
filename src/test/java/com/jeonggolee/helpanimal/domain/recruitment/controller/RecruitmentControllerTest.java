@@ -8,7 +8,7 @@ import com.jeonggolee.helpanimal.domain.recruitment.entity.Recruitment;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentMethod;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentType;
 import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRepository;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import org.junit.jupiter.api.BeforeAll;
@@ -74,12 +74,12 @@ public class RecruitmentControllerTest {
 
     @BeforeAll
     public void 유저_동물_등록() {
-        User user = initUser();
-        initRecruitment(user);
+        UserEntity userEntity = initUser();
+        initRecruitment(userEntity);
     }
 
-    private User initUser() {
-        User user = User.builder()
+    private UserEntity initUser() {
+        UserEntity userEntity = UserEntity.builder()
                 .name("테스트")
                 .email(EMAIL)
                 .password("pass")
@@ -87,14 +87,14 @@ public class RecruitmentControllerTest {
                 .profileImage("image")
                 .role(Role.GUEST)
                 .build();
-        return userRepository.save(user);
+        return userRepository.save(userEntity);
     }
 
-    private void initRecruitment(User user) {
+    private void initRecruitment(UserEntity userEntity) {
         RECRUITMENT_ID = recruitmentRepository.save(
                 Recruitment.builder()
                         .name(NAME)
-                        .user(user)
+                        .userEntity(userEntity)
                         .content(CONTENT)
                         .animal(Animal.CAT)
                         .participant(PARTICIPANT)

@@ -8,7 +8,7 @@ import com.jeonggolee.helpanimal.common.exception.UserNotFoundException;
 import com.jeonggolee.helpanimal.common.jwt.JwtTokenProvider;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
@@ -35,7 +35,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ActiveProfiles("local")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
-public class UserControllerFailTest {
+public class UserEntityControllerFailTest {
     private final Role GUEST = Role.GUEST;
     private final String EMAIL = "test@naver.com";
     private final String PASSWORD = "password";
@@ -78,7 +78,7 @@ public class UserControllerFailTest {
 
     @BeforeAll
     public void initUser() {
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email(EMAIL)
                 .password(passwordEncoder.encode(PASSWORD))
                 .nickname(NICKNAME)
@@ -86,16 +86,16 @@ public class UserControllerFailTest {
                 .name(NAME)
                 .role(GUEST)
                 .build();
-        userRepository.save(user);
+        userRepository.save(userEntity);
     }
 
     public void updateUserUrl() {
-        User user = findUser();
-        user.updateUrl(EMAIL_VERIFY_URL);
-        userRepository.save(user);
+        UserEntity userEntity = findUser();
+        userEntity.updateUrl(EMAIL_VERIFY_URL);
+        userRepository.save(userEntity);
     }
 
-    public User findUser() {
+    public UserEntity findUser() {
         return userRepository.findOne(searchSpecification.searchWithEmailEqual(EMAIL))
                 .orElseThrow(() -> new UserNotFoundException("존재하지 않는 회원입니다."));
     }
@@ -233,8 +233,8 @@ public class UserControllerFailTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
-        User user = findUser();
-        assertThat(user.getUrl()).isNotNull();
-        assertThat(user.getRole()).isEqualTo(Role.GUEST);
+        UserEntity userEntity = findUser();
+        assertThat(userEntity.getUrl()).isNotNull();
+        assertThat(userEntity.getRole()).isEqualTo(Role.GUEST);
     }
 }

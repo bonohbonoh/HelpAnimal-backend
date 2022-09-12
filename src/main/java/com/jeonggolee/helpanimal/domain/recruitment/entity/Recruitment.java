@@ -4,7 +4,7 @@ import com.jeonggolee.helpanimal.common.entity.BaseTimeEntity;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.Animal;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentMethod;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentType;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 @Getter
 @NoArgsConstructor
@@ -54,7 +55,7 @@ public class Recruitment extends BaseTimeEntity {
      */
     @ManyToOne
     @JoinColumn(name = "author_id")
-    private User user;
+    private UserEntity userEntity;
 
     /**
      * 내용
@@ -91,6 +92,7 @@ public class Recruitment extends BaseTimeEntity {
     /**
      * 공고신청내역
      */
+    @BatchSize(size = 1000)
     @OneToMany(mappedBy = "recruitment", cascade = CascadeType.ALL)
     private List<RecruitmentRequest> recruitmentRequests;
 
@@ -110,8 +112,8 @@ public class Recruitment extends BaseTimeEntity {
         this.imageUrl = imageUrl;
     }
 
-    public void addUser(User user) {
-        this.user = user;
+    public void addUser(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 
 

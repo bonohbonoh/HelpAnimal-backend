@@ -11,7 +11,7 @@ import com.jeonggolee.helpanimal.domain.recruitment.entity.RecruitmentRequest;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentApplicationStatus;
 import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRepository;
 import com.jeonggolee.helpanimal.domain.recruitment.repository.RecruitmentRequestRepository;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
@@ -33,16 +33,16 @@ public class RecruitmentRequestService {
 
     @Transactional
     public Long requestRecruitment(RecruitmentApplicationRequestDto dto) {
-        User requestUser = findUser(dto.getEmail());
+        UserEntity requestUserEntity = findUser(dto.getEmail());
         Recruitment recruitment = findRecruitment(dto.getRecruitmentId());
         validateAvailableRequest(recruitment);
-        deleteRecruitmentApplicationHistory(recruitment.getId(), requestUser.getUserId());
+        deleteRecruitmentApplicationHistory(recruitment.getId(), requestUserEntity.getUserId());
         RecruitmentRequest request = RecruitmentRequest.builder()
             .comment(dto.getComment())
             .status(RecruitmentApplicationStatus.REQUEST)
             .build();
         recruitment.addRequest(request);
-        requestUser.addRecruitmentRequest(request);
+        requestUserEntity.addRecruitmentRequest(request);
         return recruitmentRepository.save(recruitment).getId();
     }
 
@@ -51,8 +51,8 @@ public class RecruitmentRequestService {
         RecruitmentRequest recruitmentRequest = findByIdAndDeletedAtIsNull(id).orElseThrow(
             () -> new RecruitmentApplicationNotFoundException("해당 신청내역이 존재하지 않습니다."));
         Recruitment recruitment = recruitmentRequest.getRecruitment();
-        User user = recruitmentRequest.getUser();
-        user.deleteRecruitment(recruitment);
+        UserEntity userEntity = recruitmentRequest.getUserEntity();
+        userEntity.deleteRecruitment(recruitment);
         recruitment.deleteRequest(recruitmentRequest);
         recruitmentRequest.delete();
 
@@ -121,7 +121,7 @@ public class RecruitmentRequestService {
             .id(recruitmentRequest.getId())
             .recruitmentId(recruitmentRequest.getRecruitment().getId())
             .recruitmentName(recruitmentRequest.getRecruitment().getName())
-            .email(recruitmentRequest.getUser().getEmail())
+            .email(recruitmentRequest.getUserEntity().getEmail())
             .comment(recruitmentRequest.getComment())
             .status(recruitmentRequest.getStatus())
             .build();
@@ -133,7 +133,7 @@ public class RecruitmentRequestService {
         }
     }
 
-    private User findUser(String email) {
+    private UserEntity findUser(String email) {
         return userRepository.findByEmailAndDeletedAtNull(email).orElseThrow(
             () -> new UserNotFoundException("존재하지 않는 회원입니다."));
     }

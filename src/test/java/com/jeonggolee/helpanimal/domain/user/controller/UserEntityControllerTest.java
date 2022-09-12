@@ -6,7 +6,7 @@ import com.jeonggolee.helpanimal.common.exception.UserNotFoundException;
 import com.jeonggolee.helpanimal.common.jwt.JwtTokenProvider;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @ActiveProfiles("local")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
-public class UserControllerTest {
+public class UserEntityControllerTest {
 
     private final Role GUEST = Role.GUEST;
     private final String EMAIL = "test@naver.com";
@@ -79,7 +79,7 @@ public class UserControllerTest {
 
     @BeforeAll
     public void initUser() {
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email(EMAIL)
                 .password(passwordEncoder.encode(PASSWORD))
                 .nickname(NICKNAME)
@@ -87,16 +87,16 @@ public class UserControllerTest {
                 .name(NAME)
                 .role(GUEST)
                 .build();
-        userRepository.save(user);
+        userRepository.save(userEntity);
     }
 
     public void updateUserUrl() {
-        User user = findUser();
-        user.updateUrl(EMAIL_VERIFY_URL);
-        userRepository.save(user);
+        UserEntity userEntity = findUser();
+        userEntity.updateUrl(EMAIL_VERIFY_URL);
+        userRepository.save(userEntity);
     }
 
-    public User findUser() {
+    public UserEntity findUser() {
         return userRepository.findOne(searchSpecification.searchWithEmailEqual(EMAIL))
                 .orElseThrow(() -> new UserNotFoundException("존재하지 않는 회원입니다."));
     }
@@ -183,10 +183,10 @@ public class UserControllerTest {
 
                 .andReturn();
 
-        User user = findUser();
+        UserEntity userEntity = findUser();
 
-        assertThat(user.getUrl()).isNotNull();
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(user.getUrl());
+        assertThat(userEntity.getUrl()).isNotNull();
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(userEntity.getUrl());
 
     }
 
@@ -211,9 +211,9 @@ public class UserControllerTest {
 
                 .andReturn();
 
-        User user = findUser();
-        assertThat(user.getUrl()).isNotNull();
-        assertThat(user.getRole()).isEqualTo(Role.USER);
+        UserEntity userEntity = findUser();
+        assertThat(userEntity.getUrl()).isNotNull();
+        assertThat(userEntity.getRole()).isEqualTo(Role.USER);
         assertThat(result.getResponse().getContentAsString()).isEqualTo(Role.USER.toString());
 
     }

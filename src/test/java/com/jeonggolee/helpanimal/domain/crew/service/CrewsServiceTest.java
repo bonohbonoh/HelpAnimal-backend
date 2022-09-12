@@ -4,7 +4,7 @@ import com.jeonggolee.helpanimal.domain.crew.dto.CreateCrewDto;
 import com.jeonggolee.helpanimal.domain.crew.dto.ReadCrewDetailDto;
 import com.jeonggolee.helpanimal.domain.crew.dto.ReadCrewDto;
 import com.jeonggolee.helpanimal.domain.crew.dto.UpdateCrewDto;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +29,7 @@ class CrewsServiceTest {
     CrewService crewService;
 
     private String saveUser(){
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email("userTestEmail@test.com")
                 .password("테스트비밀번호")
                 .name("테스트이름")
@@ -38,7 +38,7 @@ class CrewsServiceTest {
                 .role(Role.USER)
                 .build();
 
-        return userRepository.save(user).getEmail();
+        return userRepository.save(userEntity).getEmail();
     }
 
     @Test

@@ -6,7 +6,7 @@ import com.jeonggolee.helpanimal.common.jwt.JwtTokenProvider;
 import com.jeonggolee.helpanimal.domain.user.dto.UserInfoReadDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.exception.auth.WrongAuthenticationUrlException;
 import com.jeonggolee.helpanimal.domain.user.exception.login.WrongPasswordException;
 import com.jeonggolee.helpanimal.domain.user.exception.signup.UserDuplicationException;
@@ -39,7 +39,7 @@ public class UserService {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    private User getUser(String email) {
+    private UserEntity getUser(String email) {
         return userRepository.findOne(userSpecification.searchWithEmailEqual(email))
                 .orElseThrow(() -> new UserNotFoundException("존재하지 않는 회원입니다."));
     }
@@ -47,7 +47,7 @@ public class UserService {
     public String signUpUser(UserSignupDto dto) {
         String encodePassword = passwordEncoder.encode(dto.getPassword());
         dto.PasswordEncoding(encodePassword);
-        Optional<User> user = userRepository.findOne(userSpecification.searchWithEmailEqual(dto.getEmail()));
+        Optional<UserEntity> user = userRepository.findOne(userSpecification.searchWithEmailEqual(dto.getEmail()));
         if (user.isPresent()) {
             throw new UserDuplicationException("이미 존재하는 유저입니다.");
         }
@@ -55,12 +55,13 @@ public class UserService {
     }
 
     public JwtTokenDto loginUser(UserLoginDto dto) {
-        User user = getUser(dto.getEmail());
-        boolean isMatchingPassword = passwordEncoder.matches(dto.getPassword(), user.getPassword());
+        UserEntity userEntity = getUser(dto.getEmail());
+        boolean isMatchingPassword = passwordEncoder.matches(dto.getPassword(), userEntity.getPassword());
         if (!isMatchingPassword) {
             throw new WrongPasswordException("잘못된 패스워드 입니다.");
         }
-        return new JwtTokenDto(provider.generateToken(dto.getEmail(), Collections.singleton(new SimpleGrantedAuthority(user.getRole().getKey()))));
+        return new JwtTokenDto(provider.generateToken(dto.getEmail(), Collections.singleton(new SimpleGrantedAuthority(
+            userEntity.getRole().getKey()))));
     }
 
     public UserInfoReadDto getUserInfo() {
@@ -70,22 +71,22 @@ public class UserService {
 
     public String sendEmail() {
         String email = getAuthenticationName();
-        User user = getUser(email);
+        UserEntity userEntity = getUser(email);
         String url = "/auth/email-verify/email?=" + email + "&authToken=" + UUID.randomUUID().toString();
         userEmailService.sendMail(email, "회원가입 인증 이메일입니다.", url);
-        user.updateUrl(url);
-        userRepository.save(user);
+        userEntity.updateUrl(url);
+        userRepository.save(userEntity);
         return url;
     }
 
     public String authEmail(String url) {
         String email = getAuthenticationName();
-        User user = getUser(email);
-        if (!url.equals(user.getUrl())) {
+        UserEntity userEntity = getUser(email);
+        if (!url.equals(userEntity.getUrl())) {
             throw new WrongAuthenticationUrlException("잘못된 Url 입니다.");
         }
-        user.updateRole(Role.USER);
-        userRepository.save(user);
-        return user.getRole().toString();
+        userEntity.updateRole(Role.USER);
+        userRepository.save(userEntity);
+        return userEntity.getRole().toString();
     }
 }

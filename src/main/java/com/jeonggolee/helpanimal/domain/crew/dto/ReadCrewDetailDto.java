@@ -17,7 +17,7 @@ public class ReadCrewDetailDto {
                 .filter(member -> member.getRole().equals(CrewMemberRole.MASTER))
                 .findAny()
                 .orElseThrow(() ->new IllegalStateException("치명적인 오류.(크루 마스터가 없음)"))
-                .getUser().getName();
+                .getUserEntity().getName();
 
         this.numOfMember = crews.getCrewMembersList().size();
     }

@@ -1,5 +1,6 @@
 package com.jeonggolee.helpanimal.domain.user.service;
 
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +24,11 @@ public class UserDetailService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        com.jeonggolee.helpanimal.domain.user.entity.
-                User user = userRepository.findOne(userSpecification.searchWithEmailEqual(email))
+        UserEntity userEntity = userRepository.findOne(userSpecification.searchWithEmailEqual(email))
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
-        return new User(user.getEmail(), user.getPassword(), Collections.singleton(new SimpleGrantedAuthority(user.getRole().getKey())));
+        return new User(userEntity.getEmail(), userEntity.getPassword(), Collections.singleton(new SimpleGrantedAuthority(
+            userEntity.getRole().getKey())));
     }
 
 }

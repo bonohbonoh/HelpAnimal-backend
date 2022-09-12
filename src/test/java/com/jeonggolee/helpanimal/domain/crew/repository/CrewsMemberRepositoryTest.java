@@ -4,7 +4,7 @@ import com.jeonggolee.helpanimal.domain.crew.domain.Crews;
 import com.jeonggolee.helpanimal.domain.crew.domain.CrewMembers;
 import com.jeonggolee.helpanimal.domain.crew.enums.CrewMemberRole;
 import com.jeonggolee.helpanimal.domain.crew.query.CrewMemberSpecification;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
 import org.junit.jupiter.api.DisplayName;
@@ -34,8 +34,8 @@ class CrewsMemberRepositoryTest {
     CrewMemberSpecification cms;
 
 
-    private User saveUser(String email){
-        User user = User.builder()
+    private UserEntity saveUser(String email){
+        UserEntity userEntity = UserEntity.builder()
                 .email(email)
                 .password("테스트비밀번호")
                 .name("테스트이름")
@@ -44,7 +44,7 @@ class CrewsMemberRepositoryTest {
                 .role(Role.USER)
                 .build();
 
-        return userRepository.save(user);
+        return userRepository.save(userEntity);
     }
 
     private Crews saveCrew(String name){
@@ -53,13 +53,13 @@ class CrewsMemberRepositoryTest {
         return crewRepository.save(crews);
     }
 
-    private CrewMembers generateCrewMember(User user, Crews crews){
+    private CrewMembers generateCrewMember(UserEntity userEntity, Crews crews){
         CrewMembers crewMembers = CrewMembers.builder().role(CrewMemberRole.MASTER).build();
 
         crews.addCrewMember(crewMembers);
         crewRepository.save(crews);
 
-        crewMembers.registerUser(user);
+        crewMembers.registerUser(userEntity);
 
         return crewMembers;
     }
@@ -68,9 +68,9 @@ class CrewsMemberRepositoryTest {
     @DisplayName("크루 맴버 생성")
     void saveCrewMemberTest(){
         //given
-        User user = saveUser("테스트이메일");
+        UserEntity userEntity = saveUser("테스트이메일");
         Crews crews = saveCrew("테스트크루");
-        CrewMembers crewMembers = generateCrewMember(user, crews);
+        CrewMembers crewMembers = generateCrewMember(userEntity, crews);
 
         //when
         CrewMembers saveCrewMembers = crewMemberRepository.save(crewMembers);
@@ -83,9 +83,9 @@ class CrewsMemberRepositoryTest {
     @DisplayName("크루 맴버 아이디로 조회")
     void findCrewMemberTest(){
         //given
-        User user = saveUser("테스트이메일");
+        UserEntity userEntity = saveUser("테스트이메일");
         Crews crews = saveCrew("테스트크루");
-        CrewMembers crewMembers = generateCrewMember(user, crews);
+        CrewMembers crewMembers = generateCrewMember(userEntity, crews);
 
         //when
         Long saveId = crewMemberRepository.save(crewMembers).getId();
@@ -112,9 +112,9 @@ class CrewsMemberRepositoryTest {
     @DisplayName("크루맴버 삭제")
     void deleteCrewMemberTest(){
         //given
-        User user = saveUser("테스트이메일");
+        UserEntity userEntity = saveUser("테스트이메일");
         Crews crews = saveCrew("테스트크루");
-        CrewMembers crewMembers = generateCrewMember(user, crews);
+        CrewMembers crewMembers = generateCrewMember(userEntity, crews);
         crewMemberRepository.save(crewMembers);
 
         //when

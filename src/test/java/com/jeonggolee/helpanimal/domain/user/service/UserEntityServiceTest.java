@@ -6,7 +6,7 @@ import com.jeonggolee.helpanimal.common.jwt.JwtTokenProvider;
 import com.jeonggolee.helpanimal.domain.user.dto.UserInfoReadDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserLoginDto;
 import com.jeonggolee.helpanimal.domain.user.dto.UserSignupDto;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import com.jeonggolee.helpanimal.domain.user.query.UserSpecification;
 import com.jeonggolee.helpanimal.domain.user.repository.UserRepository;
 import com.jeonggolee.helpanimal.domain.user.util.Role;
@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 @ActiveProfiles("local")
-public class UserServiceTest {
+public class UserEntityServiceTest {
 
     private final Role GUEST = Role.GUEST;
     private final String EMAIL = "test@naver.com";
@@ -53,7 +53,7 @@ public class UserServiceTest {
 
     @BeforeAll
     public void initUser() {
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email(EMAIL)
                 .password(passwordEncoder.encode(PASSWORD))
                 .nickname(NICKNAME)
@@ -61,10 +61,10 @@ public class UserServiceTest {
                 .name(NAME)
                 .role(GUEST)
                 .build();
-        userRepository.save(user);
+        userRepository.save(userEntity);
     }
 
-    public User findUser() {
+    public UserEntity findUser() {
         return userRepository.findOne(searchSpecification.searchWithEmailEqual(EMAIL))
                 .orElseThrow(() -> new UserNotFoundException("존재하지 않는 회원입니다."));
 
@@ -72,8 +72,8 @@ public class UserServiceTest {
 
     @Test
     public void signUpUserServiceTest() {
-        User user = findUser();
-        userRepository.delete(user);
+        UserEntity userEntity = findUser();
+        userRepository.delete(userEntity);
 
         //given
         UserSignupDto dto = new UserSignupDto(EMAIL, PASSWORD, NAME, NICKNAME, IMAGE, GUEST);
@@ -125,14 +125,14 @@ public class UserServiceTest {
     public void mailSendServiceTest() {
 
         //given
-        User user = findUser();
+        UserEntity userEntity = findUser();
 
         //when
         String url = userService.sendEmail();
 
         //then
-        assertThat(user.getUrl()).isNotNull();
-        assertThat(user.getUrl()).isEqualTo(url);
+        assertThat(userEntity.getUrl()).isNotNull();
+        assertThat(userEntity.getUrl()).isEqualTo(url);
     }
 
     @Test
@@ -146,10 +146,10 @@ public class UserServiceTest {
         String role = userService.authEmail(url);
 
         //then
-        User user = findUser();
+        UserEntity userEntity = findUser();
 
-        assertThat(user.getUrl()).isEqualTo(url);
-        assertThat(user.getRole().toString()).isEqualTo(role);
+        assertThat(userEntity.getUrl()).isEqualTo(url);
+        assertThat(userEntity.getRole().toString()).isEqualTo(role);
     }
 
 

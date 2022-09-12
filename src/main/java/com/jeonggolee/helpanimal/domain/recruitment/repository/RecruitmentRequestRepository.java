@@ -3,7 +3,7 @@ package com.jeonggolee.helpanimal.domain.recruitment.repository;
 import com.jeonggolee.helpanimal.domain.recruitment.dto.response.RecruitmentApplicationDetailDto;
 import com.jeonggolee.helpanimal.domain.recruitment.entity.Recruitment;
 import com.jeonggolee.helpanimal.domain.recruitment.entity.RecruitmentRequest;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
     )
     List<RecruitmentRequest> findByHistory(@Param("raId") Long raId, @Param("userId") Long userId);
 
-    Optional<RecruitmentRequest> findByIdAndUserAndDeletedAtIsNull(Long id, User user);
+    Optional<RecruitmentRequest> findByIdAndUserAndDeletedAtIsNull(Long id, UserEntity userEntity);
 
     Optional<RecruitmentRequest> findByIdAndDeletedAtIsNull(Long id);
 
@@ -42,7 +42,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
             "ra.status" +
             ") " +
             "FROM RecruitmentRequest ra " +
-            "INNER JOIN User u " +
+            "INNER JOIN UserEntity u " +
             "       ON ra.user.userId = u.userId " +
             "       AND u.deletedAt IS NULL " +
             "INNER JOIN Recruitment r " +
@@ -53,7 +53,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
         countQuery =
             "SELECT count(ra) " +
                 "FROM RecruitmentRequest ra " +
-                "INNER JOIN User u " +
+                "INNER JOIN UserEntity u " +
                 "     ON ra.user.userId = u.userId " +
                 "     AND u.deletedAt IS NULL " +
                 "INNER JOIN Recruitment r " +
@@ -75,7 +75,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
             "ra.status" +
             ") " +
             "FROM RecruitmentRequest ra " +
-            "INNER JOIN User u " +
+            "INNER JOIN UserEntity u " +
             "       ON ra.user.userId = u.userId " +
             "       AND u.deletedAt IS NULL " +
             "INNER JOIN Recruitment r " +
@@ -86,7 +86,7 @@ public interface RecruitmentRequestRepository extends JpaRepository<RecruitmentR
         countQuery =
             "SELECT count(ra) " +
                 "FROM RecruitmentRequest ra " +
-                "INNER JOIN User u " +
+                "INNER JOIN UserEntity u " +
                 "     ON ra.user.userId = u.userId " +
                 "     AND u.deletedAt IS NULL " +
                 "INNER JOIN Recruitment r " +

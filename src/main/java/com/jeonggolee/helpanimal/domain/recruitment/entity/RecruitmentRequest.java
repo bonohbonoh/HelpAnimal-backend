@@ -2,7 +2,7 @@ package com.jeonggolee.helpanimal.domain.recruitment.entity;
 
 import com.jeonggolee.helpanimal.common.entity.BaseTimeEntity;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentApplicationStatus;
-import com.jeonggolee.helpanimal.domain.user.entity.User;
+import com.jeonggolee.helpanimal.domain.user.entity.UserEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -36,7 +36,7 @@ public class RecruitmentRequest extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity userEntity;
 
     @Column(length = 50, nullable = false)
     private String comment;
@@ -53,7 +53,7 @@ public class RecruitmentRequest extends BaseTimeEntity {
         this.recruitment = recruitment;
     }
 
-    public void addUser(User user) {
-        this.user = user;
+    public void addUser(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 }
