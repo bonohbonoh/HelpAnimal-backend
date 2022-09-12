@@ -54,11 +54,11 @@ public class RecruitmentRegistDto {
     @NotNull(message = "채용방법을 선택해주세요")
     private RecruitmentMethod recruitmentMethod;
 
-    public Recruitment toEntity(Animal animal) {
+    public Recruitment toEntity() {
         return Recruitment.builder()
             .name(this.name)
             .content(this.content)
-            .animal(animal)
+            .animal(Animal.valueOf(this.animal))
             .recruitmentType(this.recruitmentType)
             .recruitmentMethod(this.recruitmentMethod)
             .participant(this.participant)

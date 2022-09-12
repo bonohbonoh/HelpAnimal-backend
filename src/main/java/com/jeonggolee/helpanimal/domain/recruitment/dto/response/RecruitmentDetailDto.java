@@ -35,7 +35,7 @@ public class RecruitmentDetailDto {
                 .recruitmentType(recruitment.getRecruitmentType())
                 .author(recruitment.getUser().getNickname())
                 .content(recruitment.getContent())
-                .animalType(recruitment.getAnimal().getName())
+                .animalType(recruitment.getAnimal().toString())
                 .participant(recruitment.getParticipant())
                 .imageUrl(recruitment.getImageUrl())
                 .recruitmentMethod(recruitment.getRecruitmentMethod())
