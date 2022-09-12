@@ -1,6 +1,6 @@
 package com.jeonggolee.helpanimal.domain.recruitment.dto.request;
 
-import com.jeonggolee.helpanimal.domain.recruitment.entity.Animal;
+import com.jeonggolee.helpanimal.domain.recruitment.enums.Animal;
 import com.jeonggolee.helpanimal.domain.recruitment.entity.Recruitment;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentMethod;
 import com.jeonggolee.helpanimal.domain.recruitment.enums.RecruitmentType;

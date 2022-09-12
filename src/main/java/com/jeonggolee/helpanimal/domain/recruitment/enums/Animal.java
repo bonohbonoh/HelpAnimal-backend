@@ -1,4 +1,4 @@
-package com.jeonggolee.helpanimal.domain.recruitment.entity;
+package com.jeonggolee.helpanimal.domain.recruitment.enums;
 
 public enum Animal {
     DOG("DOG", "개"),
